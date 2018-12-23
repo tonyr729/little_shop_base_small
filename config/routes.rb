@@ -5,5 +5,11 @@ Rails.application.routes.draw do
   resources :merchants, only: [:index]
   get '/cart', to: 'cart#index'
   get '/login', to: 'session#new'
+  get '/logout', to: 'session#destroy'
   get '/register', to: 'users#new', as: 'registration'
+
+  get '/profile', to: 'profile#index', as: 'profile'
+  namespace :profile do
+    resources :orders, only: [:index]
+  end
 end
