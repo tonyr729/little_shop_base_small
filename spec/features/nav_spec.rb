@@ -23,6 +23,11 @@ RSpec.describe 'Site Nav', type: :feature do
 
     click_link 'Home'
     expect(current_path).to eq(root_path)
+
+    expect(page).to_not have_link('Log out')
+    expect(page).to_not have_link('Profile')
+    expect(page).to_not have_link('Dashboard')
+    expect(page).to_not have_link('Users')
   end
   it 'should show proper links for all users logged in' do
     user = create(:user)
@@ -41,6 +46,8 @@ RSpec.describe 'Site Nav', type: :feature do
 
     expect(page).to_not have_link('Log In')
     expect(page).to_not have_link('Register')
+    expect(page).to_not have_link('Dashboard')
+    expect(page).to_not have_link('Users')
   end
   it 'should show proper links for all merchants logged in' do
     merchant = create(:merchant)
@@ -69,6 +76,7 @@ RSpec.describe 'Site Nav', type: :feature do
     expect(current_path).to eq(admin_dashboard_index_path)
 
     expect(page).to_not have_link('Profile')
+    expect(page).to_not have_link('Cart')
     expect(page).to_not have_link('Log In')
     expect(page).to_not have_link('Register')
   end

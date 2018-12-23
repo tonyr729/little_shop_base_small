@@ -1,0 +1,33 @@
+require 'rails_helper'
+
+RSpec.describe 'Registration Workflow', type: :feature do
+  it 'allows a visitor to register successfully when all data is entered properly' do
+    visit registration_path
+    email = "email@gmail.com"
+    name = "Ian Douglas"
+    address = "123 Main St"
+    city = "Denver"
+    state = "CO" 
+    zip = "80000" 
+
+    fill_in :user_email,	with: email
+    fill_in :user_password,	with: "password" 
+    fill_in :user_password_confirmation,	with: "password" 
+    fill_in :user_name,	with: name
+    fill_in :user_address,	with: address 
+    fill_in :user_city,	with: city
+    fill_in :user_state,	with: state
+    fill_in :user_zip,	with: zip
+    click_button 'Create User'
+
+    expect(current_path).to eq(profile_path)
+    expect(page).to have_content('You are registered and logged in')
+    # expect(page).to have_content("Email: #{email}")
+    # within '#address' do
+    #   expect(page).to have_content(address)
+    #   expect(page).to have_content(city)
+    #   expect(page).to have_content(state)
+    #   expect(page).to have_content(zip)
+    # end
+  end
+end
