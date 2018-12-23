@@ -14,4 +14,9 @@ Rails.application.routes.draw do
   namespace :profile do
     resources :orders, only: [:index]
   end
+
+  namespace :admin do
+    resources :users, only: [:index]
+    resources :dashboard, only: [:index]
+  end
 end
