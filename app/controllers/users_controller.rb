@@ -4,10 +4,14 @@ class UsersController < ApplicationController
   end
 
   def create
-    user = User.create!(user_params)
-    session[:user_id] = user.id
-    flash[:success] = 'You are registered and logged in'
-    redirect_to profile_path
+    @user = User.create(user_params)
+    if @user.save
+      session[:user_id] = @user.id
+      flash[:success] = 'You are registered and logged in'
+      redirect_to profile_path
+    else
+      render :new
+    end
   end
 
   private

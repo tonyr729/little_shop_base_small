@@ -30,4 +30,18 @@ RSpec.describe 'Registration Workflow', type: :feature do
     #   expect(page).to have_content(zip)
     # end
   end
+  describe 'blocks a visitor from registering' do
+    scenario 'when email is not unique' do
+      email = "email@gmail.com"
+      user = create(:user, email: email)
+
+      visit registration_path
+
+      fill_in :user_email,	with: email
+      click_button 'Create User'
+
+      expect(current_path).to eq(users_path)
+      expect(page).to have_content('Email has already been taken')
+    end
+  end
 end
