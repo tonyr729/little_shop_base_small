@@ -28,6 +28,15 @@ RSpec.describe 'Site Nav', type: :feature do
     expect(page).to_not have_link('Profile')
     expect(page).to_not have_link('Dashboard')
     expect(page).to_not have_link('Users')
+    
+    visit profile_path
+    expect(page.status_code).to eq(404)
+    visit dashboard_path
+    expect(page.status_code).to eq(404)
+    visit admin_dashboard_index_path
+    expect(page.status_code).to eq(404)
+    visit admin_users_path
+    expect(page.status_code).to eq(404)
   end
   it 'should show proper links for all users logged in' do
     user = create(:user)
@@ -48,6 +57,13 @@ RSpec.describe 'Site Nav', type: :feature do
     expect(page).to_not have_link('Register')
     expect(page).to_not have_link('Dashboard')
     expect(page).to_not have_link('Users')
+
+    visit dashboard_path
+    expect(page.status_code).to eq(404)
+    visit admin_dashboard_index_path
+    expect(page.status_code).to eq(404)
+    visit admin_users_path
+    expect(page.status_code).to eq(404)
   end
   it 'should show proper links for all merchants logged in' do
     merchant = create(:merchant)
@@ -62,6 +78,17 @@ RSpec.describe 'Site Nav', type: :feature do
     expect(page).to_not have_link('Cart')
     expect(page).to_not have_link('Log In')
     expect(page).to_not have_link('Register')
+
+    visit profile_path
+    expect(page.status_code).to eq(404)
+    visit cart_path
+    expect(page.status_code).to eq(404)
+    visit cart_path
+    expect(page.status_code).to eq(404)
+    visit admin_dashboard_index_path
+    expect(page.status_code).to eq(404)
+    visit admin_users_path
+    expect(page.status_code).to eq(404)
   end
   it 'should show proper links for all admins logged in' do
     admin = create(:admin)
@@ -79,5 +106,14 @@ RSpec.describe 'Site Nav', type: :feature do
     expect(page).to_not have_link('Cart')
     expect(page).to_not have_link('Log In')
     expect(page).to_not have_link('Register')
+
+    visit cart_path
+    expect(page.status_code).to eq(404)
+    visit dashboard_path
+    expect(page.status_code).to eq(404)
+    visit profile_path
+    expect(page.status_code).to eq(404)
+    visit cart_path
+    expect(page.status_code).to eq(404)
   end
 end

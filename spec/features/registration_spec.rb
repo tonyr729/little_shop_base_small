@@ -31,6 +31,20 @@ RSpec.describe 'Registration Workflow', type: :feature do
     # end
   end
   describe 'blocks a visitor from registering' do
+    scenario 'when details are missing' do
+      visit registration_path
+
+      click_button 'Create User'
+
+      expect(current_path).to eq(users_path)
+      expect(page).to have_content("Email can't be blank")
+      expect(page).to have_content("Password can't be blank")
+      expect(page).to have_content("Name can't be blank")
+      expect(page).to have_content("Address can't be blank")
+      expect(page).to have_content("City can't be blank")
+      expect(page).to have_content("State can't be blank")
+      expect(page).to have_content("Zip can't be blank")
+    end
     scenario 'when email is not unique' do
       email = "email@gmail.com"
       user = create(:user, email: email)

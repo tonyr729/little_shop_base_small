@@ -22,9 +22,4 @@ Rails.application.routes.draw do
     resources :users, only: [:index]
     resources :dashboard, only: [:index]
   end
-
-  # custom error pages
-  get "/404", to: "errors#not_found"
-  get "/422", to: "errors#unacceptable"
-  get "/500", to: "errors#internal_error"
 end
