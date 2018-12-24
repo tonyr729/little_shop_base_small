@@ -22,8 +22,8 @@ Rails.application.routes.draw do
 
   namespace :admin do
     resources :users, only: [:index, :show]
-    get '/user/:id/enable', to: 'users#enable', as: 'user_enable'
-    get '/user/:id/disable', to: 'users#disable', as: 'user_disable'
+    post '/user/:id/enable', to: 'users#enable', as: 'user_enable'
+    post '/user/:id/disable', to: 'users#disable', as: 'user_disable'
     resources :dashboard, only: [:index]
   end
 end
