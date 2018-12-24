@@ -16,6 +16,7 @@ Rails.application.routes.draw do
   get '/profile', to: 'profile#index', as: 'profile'
 
   namespace :profile do
+    get '/edit', to: 'profile#edit'
     resources :orders, only: [:index]
   end
 

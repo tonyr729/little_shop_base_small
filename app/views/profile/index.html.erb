@@ -1,0 +1,9 @@
+<h2>Profile Page for <%= @user.name %></h2>
+<%= tag.div class: 'profile' do %>
+  <p><%= @user.email %></p>
+  <%= tag.div id: 'address' do %>
+    <p><%= @user.address %><br/>
+    <%= @user.city %>, <%= @user.state %> <%= @user.zip %></p>
+  <% end %>
+  <%= link_to 'Edit Profile', profile_edit_path %>
+<% end %>

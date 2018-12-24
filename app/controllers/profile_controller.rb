@@ -2,6 +2,7 @@ class ProfileController < ApplicationController
   before_action :require_default_user, only: :index
 
   def index
+    @user = current_user
   end
 
   private
