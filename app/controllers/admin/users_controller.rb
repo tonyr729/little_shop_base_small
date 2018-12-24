@@ -4,8 +4,18 @@ class Admin::UsersController < Admin::BaseController
   end
 
   def enable
+    set_user_active(true)
+  end
+
+  def disable
+    set_user_active(false)
+  end
+
+  private
+
+  def set_user_active(state)
     user = User.find(params[:id])
-    user.active = true
+    user.active = state
     user.save
     redirect_to admin_users_path
   end

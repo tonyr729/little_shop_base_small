@@ -35,5 +35,17 @@ RSpec.describe 'Admin User Index workflow', type: :feature do
         expect(page).to have_button('Disable')
       end
     end
+    it 'allows admin to disable an active user' do
+      visit admin_users_path
+
+      within "#user-#{@user_1.id}" do
+        click_button 'Disable'
+      end
+      expect(current_path).to eq(admin_users_path)
+
+      within "#user-#{@user_1.id}" do
+        expect(page).to have_button('Enable')
+      end
+    end
   end
 end
