@@ -3,6 +3,10 @@ class Admin::UsersController < Admin::BaseController
     @users = User.where(role: :default)
   end
 
+  def show
+    @user = User.find(params[:id])
+    render :'profile/index'
+  end
   def enable
     set_user_active(true)
   end
