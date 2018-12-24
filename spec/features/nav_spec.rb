@@ -1,6 +1,11 @@
 require 'rails_helper'
 
 RSpec.describe 'Site Nav', type: :feature do
+  before(:each) do
+    @user = create(:user)
+    @merchant = create(:merchant)
+    @admin = create(:admin)
+  end
   it 'should show proper links for all visitors' do
     allow_any_instance_of(ApplicationController).to receive(:current_user).and_return(nil)
 
@@ -28,7 +33,7 @@ RSpec.describe 'Site Nav', type: :feature do
     expect(page).to_not have_link('Profile')
     expect(page).to_not have_link('Dashboard')
     expect(page).to_not have_link('Users')
-    
+
     visit profile_path
     expect(page.status_code).to eq(404)
     visit dashboard_path
@@ -37,10 +42,15 @@ RSpec.describe 'Site Nav', type: :feature do
     expect(page.status_code).to eq(404)
     visit admin_users_path
     expect(page.status_code).to eq(404)
+    visit admin_user_path(@user)
+    expect(page.status_code).to eq(404)
+    visit admin_merchant_path(@merchant)
+    expect(page.status_code).to eq(404)
+    visit admin_dashboard_index_path
+    expect(page.status_code).to eq(404)
   end
   it 'should show proper links for all users logged in' do
-    user = create(:user)
-    allow_any_instance_of(ApplicationController).to receive(:current_user).and_return(user)
+    allow_any_instance_of(ApplicationController).to receive(:current_user).and_return(@user)
 
     visit root_path
 
@@ -64,10 +74,15 @@ RSpec.describe 'Site Nav', type: :feature do
     expect(page.status_code).to eq(404)
     visit admin_users_path
     expect(page.status_code).to eq(404)
+    visit admin_user_path(@user)
+    expect(page.status_code).to eq(404)
+    visit admin_merchant_path(@merchant)
+    expect(page.status_code).to eq(404)
+    visit admin_dashboard_index_path
+    expect(page.status_code).to eq(404)
   end
   it 'should show proper links for all merchants logged in' do
-    merchant = create(:merchant)
-    allow_any_instance_of(ApplicationController).to receive(:current_user).and_return(merchant)
+    allow_any_instance_of(ApplicationController).to receive(:current_user).and_return(@merchant)
 
     visit root_path
 
@@ -89,10 +104,15 @@ RSpec.describe 'Site Nav', type: :feature do
     expect(page.status_code).to eq(404)
     visit admin_users_path
     expect(page.status_code).to eq(404)
+    visit admin_user_path(@user)
+    expect(page.status_code).to eq(404)
+    visit admin_merchant_path(@merchant)
+    expect(page.status_code).to eq(404)
+    visit admin_dashboard_index_path
+    expect(page.status_code).to eq(404)
   end
   it 'should show proper links for all admins logged in' do
-    admin = create(:admin)
-    allow_any_instance_of(ApplicationController).to receive(:current_user).and_return(admin)
+    allow_any_instance_of(ApplicationController).to receive(:current_user).and_return(@admin)
 
     visit root_path
 
