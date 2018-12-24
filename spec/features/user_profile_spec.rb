@@ -104,4 +104,23 @@ RSpec.describe 'User Profile workflow', type: :feature do
       end
     end
   end
+  describe 'blocks profile editing' do
+    scenario 'when email is not unique' do
+      create(:user, email: 'unique@gmail.com')
+      user = create(:user, email: 'ian@gmail.com')
+      visit login_path
+      fill_in :email, with: 'ian@gmail.com'
+      fill_in :password, with: 'password'
+      click_button 'Log in'
+
+      visit profile_edit_path
+
+        fill_in :user_email,	with: 'unique@gmail.com'
+        click_button 'Update User'
+
+        expect(current_path).to eq(user_path(user))
+        expect(page).to have_content('Profile update failed')
+        expect(page).to have_content('Email has already been taken')
+      end
+  end
 end

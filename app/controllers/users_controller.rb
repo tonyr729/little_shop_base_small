@@ -22,9 +22,14 @@ class UsersController < ApplicationController
   def update
     @user = User.find(params[:id])
     @user.update(user_params)
-    session[:user_id] = @user.id
-    flash[:success] = 'Profile data updated'
-    redirect_to profile_path
+    if @user.save
+      session[:user_id] = @user.id
+      flash[:success] = 'Profile data updated'
+      redirect_to profile_path
+    else
+      flash[:error] = 'Profile update failed'
+      render :edit
+    end
   end
 
   private
