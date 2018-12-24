@@ -25,7 +25,11 @@ class UsersController < ApplicationController
     if @user.save
       session[:user_id] = @user.id
       flash[:success] = 'Profile data updated'
-      redirect_to profile_path
+      if current_user == @user
+        redirect_to profile_path
+      elsif current_user.admin?
+        redirect_to admin_user_path(@user)
+      end
     else
       flash[:error] = 'Profile update failed'
       render :edit

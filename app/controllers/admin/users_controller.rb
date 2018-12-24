@@ -7,6 +7,13 @@ class Admin::UsersController < Admin::BaseController
     @user = User.find(params[:id])
     render :'profile/index'
   end
+
+  def edit
+    @user = User.find(params[:id])
+    @user.password_digest = nil
+    render :'users/edit'
+  end
+
   def enable
     set_user_active(true)
   end
