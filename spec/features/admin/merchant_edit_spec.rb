@@ -21,4 +21,16 @@ RSpec.describe 'Admin Merchant Edit', type: :feature do
       expect(page).to have_button('Disable')
     end
   end
+  it 'allows admin to disable an active merchant' do
+    visit merchants_path
+
+    within "#merchant-#{@merchant.id}" do
+      click_button 'Disable'
+    end
+    expect(current_path).to eq(merchants_path)
+
+    within "#merchant-#{@merchant.id}" do
+      expect(page).to have_button('Enable')
+    end
+  end
 end

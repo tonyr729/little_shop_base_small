@@ -8,6 +8,10 @@ class Admin::MerchantsController < Admin::BaseController
     set_user_active(true)
   end
 
+  def disable
+    set_user_active(false)
+  end
+
   private
 
   def set_user_active(state)
