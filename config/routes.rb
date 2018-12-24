@@ -6,6 +6,7 @@ Rails.application.routes.draw do
   
   get '/cart', to: 'cart#index'
   get '/login', to: 'session#new'
+  post '/login', to: 'session#create'
   get '/logout', to: 'session#destroy'
   
   get '/register', to: 'users#new', as: 'registration'
