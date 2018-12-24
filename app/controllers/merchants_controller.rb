@@ -1,6 +1,10 @@
 class MerchantsController < ApplicationController
   before_action :require_merchant, only: :show
 
+  def index
+    @merchants = User.where(role: :merchant, active: true)
+  end
+
   def show
   end
 

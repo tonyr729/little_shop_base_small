@@ -1,0 +1,10 @@
+<h2>Merchants</h2>
+
+<% @merchants.each do |merchant| %>
+  <%= tag.div id: "merchant-#{merchant.id}" do %>
+  <p>
+    <%= merchant.name %>, <%= merchant.city %> <%= merchant.state %><br/>
+    Registered: <%= merchant.created_at %>
+  </p>
+  <% end %>
+<% end %>
