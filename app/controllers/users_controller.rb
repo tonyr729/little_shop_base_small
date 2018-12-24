@@ -3,6 +3,11 @@ class UsersController < ApplicationController
     @user = User.new
   end
 
+  def edit
+    @user = current_user
+    @user.password_digest = nil
+  end
+
   def create
     @user = User.create(user_params)
     if @user.save
@@ -12,6 +17,14 @@ class UsersController < ApplicationController
     else
       render :new
     end
+  end
+
+  def update
+    @user = User.find(params[:id])
+    @user.update(user_params)
+    session[:user_id] = @user.id
+    flash[:success] = 'Profile data updated'
+    redirect_to profile_path
   end
 
   private

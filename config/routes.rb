@@ -10,13 +10,13 @@ Rails.application.routes.draw do
   get '/logout', to: 'session#destroy'
   
   get '/register', to: 'users#new', as: 'registration'
-  resources :users, only: [:create]
+  resources :users, only: [:create, :update]
 
   get '/dashboard', to: 'merchants#show', as: 'dashboard'
   get '/profile', to: 'profile#index', as: 'profile'
 
+  get '/profile/edit', to: 'users#edit'
   namespace :profile do
-    get '/edit', to: 'profile#edit'
     resources :orders, only: [:index]
   end
 
