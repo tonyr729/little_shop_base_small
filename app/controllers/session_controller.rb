@@ -14,7 +14,8 @@ class SessionController < ApplicationController
         redirect_to admin_dashboard_index_path
       end
     else
-      # TODO
+      flash[:error] = 'Email or password is incorrect'
+      render :new
     end
   end
 
