@@ -53,7 +53,7 @@ RSpec.describe 'Site Nav', type: :feature do
     click_link 'Log out'
     expect(current_path).to eq(root_path)
 
-    expect(page).to_not have_link('Log In')
+    expect(page).to_not have_link('Log in')
     expect(page).to_not have_link('Register')
     expect(page).to_not have_link('Dashboard')
     expect(page).to_not have_link('Users')
