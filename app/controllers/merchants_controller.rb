@@ -2,10 +2,15 @@ class MerchantsController < ApplicationController
   before_action :require_merchant, only: :show
 
   def index
-    @merchants = User.where(role: :merchant, active: true)
+    flags = {role: :merchant}
+    unless current_admin?
+      flags[:active] = true
+    end
+    @merchants = User.where(flags)
   end
 
   def show
+    @merchant = current_user
   end
 
   private

@@ -21,7 +21,7 @@ class UsersController < ApplicationController
 
   def update
     @user = User.find(params[:id])
-    render file: 'errors/not_found', status: 404 unless current_user == @user || current_user.admin?
+    render file: 'errors/not_found', status: 404 unless current_user == @user || current_admin?
 
     @user.update(user_params)
     if @user.save
@@ -29,7 +29,7 @@ class UsersController < ApplicationController
       flash[:success] = 'Profile data updated'
       if current_user == @user
         redirect_to profile_path
-      elsif current_user.admin?
+      elsif current_admin?
         redirect_to admin_user_path(@user)
       end
     else
