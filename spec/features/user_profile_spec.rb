@@ -34,14 +34,14 @@ RSpec.describe 'User Profile workflow', type: :feature do
         name = "Ian Douglas 2"
         address = "123 Main St 2"
         city = "Denver 2"
-        state = "CO 2" 
-        zip = "80000 2" 
+        state = "CO 2"
+        zip = "80000 2"
 
         fill_in :user_email,	with: email
-        fill_in :user_password,	with: "new_password" 
-        fill_in :user_password_confirmation,	with: "new_password" 
+        fill_in :user_password,	with: "new_password"
+        fill_in :user_password_confirmation,	with: "new_password"
         fill_in :user_name,	with: name
-        fill_in :user_address,	with: address 
+        fill_in :user_address,	with: address
         fill_in :user_city,	with: city
         fill_in :user_state,	with: state
         fill_in :user_zip,	with: zip
@@ -79,12 +79,12 @@ RSpec.describe 'User Profile workflow', type: :feature do
         name = "Ian Douglas 2"
         address = "123 Main St 2"
         city = "Denver 2"
-        state = "CO 2" 
-        zip = "80000 2" 
+        state = "CO 2"
+        zip = "80000 2"
 
         fill_in :user_email,	with: email
         fill_in :user_name,	with: name
-        fill_in :user_address,	with: address 
+        fill_in :user_address,	with: address
         fill_in :user_city,	with: city
         fill_in :user_state,	with: state
         fill_in :user_zip,	with: zip

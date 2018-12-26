@@ -10,13 +10,16 @@ RSpec.describe Item, type: :model do
     it { should validate_numericality_of(:inventory).only_integer }
     it { should validate_numericality_of(:inventory).is_greater_than_or_equal_to(0) }
   end
-  describe 'relationships' do 
+
+  describe 'relationships' do
     it { should belong_to :user }
     it { should have_many :order_items }
     it { should have_many(:orders).through(:order_items) }
   end
-  describe 'class methods' do 
+
+  describe 'class methods' do
   end
-  describe 'instance methods' do 
+
+  describe 'instance methods' do
   end
 end

@@ -7,14 +7,14 @@ RSpec.describe 'Registration Workflow', type: :feature do
     name = "Ian Douglas"
     address = "123 Main St"
     city = "Denver"
-    state = "CO" 
-    zip = "80000" 
+    state = "CO"
+    zip = "80000"
 
     fill_in :user_email,	with: email
-    fill_in :user_password,	with: "password" 
-    fill_in :user_password_confirmation,	with: "password" 
+    fill_in :user_password,	with: "password"
+    fill_in :user_password_confirmation,	with: "password"
     fill_in :user_name,	with: name
-    fill_in :user_address,	with: address 
+    fill_in :user_address,	with: address
     fill_in :user_city,	with: city
     fill_in :user_state,	with: state
     fill_in :user_zip,	with: zip
@@ -40,18 +40,19 @@ RSpec.describe 'Registration Workflow', type: :feature do
     end
     scenario 'when password confirmation is wrong' do
       visit registration_path
+
       email = "email@gmail.com"
       name = "Ian Douglas"
       address = "123 Main St"
       city = "Denver"
-      state = "CO" 
-      zip = "80000" 
+      state = "CO"
+      zip = "80000"
 
       fill_in :user_email,	with: email
-      fill_in :user_password,	with: "password" 
-      fill_in :user_password_confirmation,	with: "different_password" 
+      fill_in :user_password,	with: "password"
+      fill_in :user_password_confirmation,	with: "different_password"
       fill_in :user_name,	with: name
-      fill_in :user_address,	with: address 
+      fill_in :user_address,	with: address
       fill_in :user_city,	with: city
       fill_in :user_state,	with: state
       fill_in :user_zip,	with: zip

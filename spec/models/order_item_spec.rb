@@ -8,12 +8,15 @@ RSpec.describe OrderItem, type: :model do
     it { should validate_numericality_of(:quantity).only_integer }
     it { should validate_numericality_of(:quantity).is_greater_than_or_equal_to(1) }
   end
-  describe 'relationships' do 
+
+  describe 'relationships' do
     it { should belong_to :order }
     it { should belong_to :item }
   end
-  describe 'class methods' do 
+
+  describe 'class methods' do
   end
-  describe 'instance methods' do 
+
+  describe 'instance methods' do
   end
 end

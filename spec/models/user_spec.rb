@@ -10,13 +10,16 @@ RSpec.describe User, type: :model do
     it { should validate_presence_of :state }
     it { should validate_presence_of :zip }
   end
-  describe 'relationships' do 
+
+  describe 'relationships' do
     it { should have_many :items }
     it { should have_many :orders }
     it { should have_many(:order_items).through(:orders) }
   end
-  describe 'class methods' do 
+
+  describe 'class methods' do
   end
-  describe 'instance methods' do 
+
+  describe 'instance methods' do
   end
 end
