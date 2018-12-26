@@ -12,4 +12,13 @@ class Item < ApplicationRecord
     only_integer: true,
     greater_than_or_equal_to: 0
   }
+
+  def avg_fulfillment_time
+    results = ActiveRecord::Base.connection.execute("select avg(updated_at - created_at) as avg_f_time from order_items where item_id=#{self.id} and fulfilled='t'")
+    if results.present?
+      return results.first['avg_f_time']
+    else
+      return nil
+    end
+  end
 end

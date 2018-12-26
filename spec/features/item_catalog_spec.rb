@@ -2,7 +2,6 @@ require 'rails_helper'
 
 include ActionView::Helpers::NumberHelper
 
-
 RSpec.describe 'Item Catalog page' do
   describe 'as any user' do
     it 'should show basic information about each item' do

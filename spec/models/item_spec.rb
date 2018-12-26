@@ -21,5 +21,15 @@ RSpec.describe Item, type: :model do
   end
 
   describe 'instance methods' do
+    it '.avg_fulfillment_time' do
+      item = create(:item)
+      merchant = item.user
+      user = create(:user)
+      order = create(:completed_order, user: user)
+      create(:fulfilled_order_item, order: order, item: item, created_at: 4.days.ago, updated_at: 1.days.ago)
+      create(:fulfilled_order_item, order: order, item: item, created_at: 1.hour.ago, updated_at: 30.minutes.ago)
+
+      expect(item.avg_fulfillment_time).to include("1 day 12:15:00")
+    end
   end
 end
