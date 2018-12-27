@@ -1,5 +1,22 @@
 <h2>Items Catalog</h2>
 
+<%= tag.div id: "statistics" do %>
+  <%= tag.div id: "popular-items" do %>
+    <ol>
+    <% @popular_items.each do |item| %>
+    <li><%= item.name %>, total ordered: <%= item.total_ordered %></li>
+    <% end %>
+    </ol>
+  <% end %>
+  <%= tag.div id: "unpopular-items" do %>
+    <ol>
+    <% @unpopular_items.each do |item| %>
+    <li><%= item.name %>, total ordered: <%= item.total_ordered %></li>
+    <% end %>
+    </ol>
+  <% end %>
+<% end %>
+
 <% @items.each do |item| %>
   <%= tag.div id: "item-#{item.id}" do %>
   <%= render partial: "card", locals: {item: item, img_width: 200}%>

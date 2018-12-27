@@ -18,6 +18,31 @@ RSpec.describe Item, type: :model do
   end
 
   describe 'class methods' do
+    describe 'item popularity' do
+      before :each do
+        merchant = create(:merchant)
+        @items = create_list(:item, 6, user: merchant)
+        user = create(:user)
+
+        order = create(:completed_order, user: user)
+        create(:fulfilled_order_item, order: order, item: @items[3], quantity: 7)
+        create(:fulfilled_order_item, order: order, item: @items[1], quantity: 6)
+        create(:fulfilled_order_item, order: order, item: @items[0], quantity: 5)
+        create(:fulfilled_order_item, order: order, item: @items[2], quantity: 3)
+        create(:fulfilled_order_item, order: order, item: @items[5], quantity: 2)
+        create(:fulfilled_order_item, order: order, item: @items[4], quantity: 1)
+      end
+      it '.item_popularity' do
+        expect(Item.item_popularity(4, :desc)).to eq([@items[3], @items[1], @items[0], @items[2]])
+        expect(Item.item_popularity(4, :asc)).to eq([@items[4], @items[5], @items[2], @items[0]])
+      end
+      it '.popular_items' do
+        expect(Item.popular_items(3)).to eq([@items[3], @items[1], @items[0]])
+      end
+      it '.unpopular_items' do
+        expect(Item.unpopular_items(3)).to eq([@items[4], @items[5], @items[2]])
+      end
+    end
   end
 
   describe 'instance methods' do

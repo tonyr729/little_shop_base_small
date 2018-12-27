@@ -5,8 +5,8 @@ include ActionView::Helpers::NumberHelper
 RSpec.describe 'Item show page' do
   describe 'as a visitor or registered user' do
     it 'should show details about a single item' do
-      item = create(:item)
-      merchant = item.user
+      merchant = create(:merchant)
+      item = create(:item, user: merchant)
       user = create(:user)
       order = create(:completed_order, user: user)
       create(:fulfilled_order_item, order: order, item: item, created_at: 4.days.ago, updated_at: 3.days.ago)
