@@ -4,6 +4,7 @@ class CartController < ApplicationController
   before_action :require_default_user_or_visitor
 
   def index
+    @items = @cart.items
   end
 
   def add_item

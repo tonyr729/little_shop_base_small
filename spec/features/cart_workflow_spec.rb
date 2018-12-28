@@ -7,6 +7,13 @@ RSpec.describe 'Cart workflow', type: :feature do
   end
 
   context 'as a visitor' do
+    it 'shows an empty cart when no items are added' do
+      visit cart_path
+
+      expect(page).to have_content('Your cart is empty')
+      expect(page).to_not have_button('Emtpy cart')
+    end
+
     it 'allows visitors to add items to cart' do
       visit item_path(@item)
       click_button "Add to Cart"
@@ -24,10 +31,17 @@ RSpec.describe 'Cart workflow', type: :feature do
   end
 
   context 'as a registered user' do
-    it 'allows visitors to add items to cart' do
+    before :each do
       user = create(:user)
       allow_any_instance_of(ApplicationController).to receive(:current_user).and_return(user)
+    end
+    it 'shows an empty cart when no items are added' do
+      visit cart_path
 
+      expect(page).to have_content('Your cart is empty')
+      expect(page).to_not have_button('Emtpy cart')
+    end
+    it 'allows visitors to add items to cart' do
       visit item_path(@item)
       click_button "Add to Cart"
 

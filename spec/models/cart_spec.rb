@@ -36,4 +36,12 @@ RSpec.describe Cart do
       })
   end
 
+  it '.items' do
+    item_1, item_2 = create_list(:item, 2)
+    cart = Cart.new({})
+    cart.add_item(item_1.id)
+    cart.add_item(item_2.id)
+
+    expect(cart.items).to eq([item_1, item_2])
+  end
 end

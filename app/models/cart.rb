@@ -17,4 +17,10 @@ class Cart
     @contents[item_id.to_s] ||= 0
     @contents[item_id.to_s] += 1
   end
+
+  def items
+    @contents.keys.map do |item_id|
+      Item.find(item_id)
+    end
+  end
 end
