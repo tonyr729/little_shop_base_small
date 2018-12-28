@@ -28,6 +28,7 @@ Rails.application.routes.draw do
     post '/users/:id/upgrade', to: 'users#upgrade', as: 'user_upgrade'
     post '/merchants/:id/enable', to: 'merchants#enable', as: 'merchant_enable'
     post '/merchants/:id/disable', to: 'merchants#disable', as: 'merchant_disable'
+    post '/merchants/:id/upgrade', to: 'merchants#downgrade', as: 'merchant_downgrade'
     resources :dashboard, only: [:index]
   end
 end

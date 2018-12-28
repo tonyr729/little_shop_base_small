@@ -1,1 +1,5 @@
 <h2>Merchant Dashboard for <%= @merchant.name %></h2>
+
+<% if current_admin? %>
+<%= button_to "Downgrade to User", admin_merchant_downgrade_path(@merchant) %>
+<% end %>

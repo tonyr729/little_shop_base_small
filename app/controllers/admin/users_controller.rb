@@ -27,9 +27,7 @@ class Admin::UsersController < Admin::BaseController
   end
 
   def upgrade
-    user = User.find(params[:id])
-    user.role = :merchant
-    user.save
+    set_user_role(User.find(params[:id]), :merchant)
     redirect_to admin_users_path
   end
 

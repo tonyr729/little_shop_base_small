@@ -38,12 +38,25 @@ RSpec.describe 'Upgrade/Downgrade users' do
     end
 
     it 'downgrades a merchant to regular user' do
-    end
-  end
+      visit merchants_path
+      click_link @merchant.name
+      expect(current_path).to eq(admin_merchant_path(@merchant))
+      click_button 'Downgrade to User'
 
-  describe 'changing role fails' do
-    scenario 'when a visitor tries'
-    scenario 'when a regular user tries'
-    scenario 'when a merchant tries'
+      expect(current_path).to eq(merchants_path)
+      expect(page).to_not have_content(@merchant.name)
+      visit admin_users_path
+      expect(page).to have_content(@merchant.name)
+
+      visit logout_path
+      visit login_path
+      expect(page).to have_link('Log in')
+      fill_in :email, with: @merchant_email
+      fill_in :password, with: @password
+      click_button 'Log in'
+      expect(current_path).to eq(profile_path)
+      visit merchants_path
+      expect(page).to_not have_content(@merchant.name)
+    end
   end
 end
