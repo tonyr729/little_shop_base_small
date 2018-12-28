@@ -112,6 +112,60 @@ RSpec.describe 'Cart workflow', type: :feature do
     end
   end
 
+  describe 'users can increase or decrease cart quantities' do
+    before :each do
+      @item_2 = create(:item, user: @merchant, inventory: 3)
+    end
+    scenario 'as a visitor' do
+      visit item_path(@item)
+    end
+    scenario 'as a registered user' do
+      user = create(:user)
+      allow_any_instance_of(ApplicationController).to receive(:current_user).and_return(user)
+      visit item_path(@item)
+    end
+    after :each do
+      click_button "Add to Cart"
+      visit cart_path
+
+      within "#item-#{@item.id}" do
+        click_button 'Remove all from cart'
+      end
+      expect(page).to have_content("You have removed all packages of #{@item.name} from your cart")
+      expect(page).to have_content('Your cart is empty')
+      expect(page).to have_link('Cart: 0')
+
+      visit item_path(@item_2)
+      click_button "Add to Cart"
+      visit cart_path
+
+      within "#item-#{@item_2.id}" do
+        click_button 'Add more to cart'
+      end
+      within "#item-#{@item_2.id}" do
+        click_button 'Add more to cart'
+      end
+      expect(page).to have_link('Cart: 3')
+
+      within "#item-#{@item_2.id}" do
+        expect(page).to_not have_button('Add more to cart')
+      end
+
+      within "#item-#{@item_2.id}" do
+        click_button 'Remove one from cart'
+      end
+      within "#item-#{@item_2.id}" do
+        click_button 'Remove one from cart'
+      end
+      expect(page).to have_content("You have removed 1 package of #{@item_2.name} from your cart, new quantity is 1")
+      within "#item-#{@item_2.id}" do
+        click_button 'Remove one from cart'
+      end
+      expect(page).to have_content('Your cart is empty')
+      expect(page).to have_link('Cart: 0')
+    end
+  end
+
   describe 'users can checkout (or not) depending on role' do
     scenario 'as a visitor' do
       visit item_path(@item)
@@ -129,6 +183,7 @@ RSpec.describe 'Cart workflow', type: :feature do
       expect(page).to have_button 'Check out'
     end
   end
+
   context 'as a merchant' do
     it 'does not allow merchants to add items to a cart' do
       merchant = create(:merchant)

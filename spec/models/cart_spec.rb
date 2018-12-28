@@ -36,6 +36,34 @@ RSpec.describe Cart do
       })
   end
 
+  it '.subtract_item' do
+    cart = Cart.new({
+      '1' => 2,
+      '2' => 3
+    })
+
+    cart.subtract_item(1)
+    cart.subtract_item(1)
+    cart.subtract_item(2)
+
+    expect(cart.contents).to eq({
+      '2' => 2
+      })
+  end
+
+  it '.remove_all_of_item' do
+    cart = Cart.new({
+      '1' => 2,
+      '2' => 3
+    })
+
+    cart.remove_all_of_item(1)
+
+    expect(cart.contents).to eq({
+      '2' => 3
+    })
+  end
+
   it '.items' do
     item_1, item_2 = create_list(:item, 2)
     cart = Cart.new({})
