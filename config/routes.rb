@@ -23,7 +23,7 @@ Rails.application.routes.draw do
 
   get '/profile/edit', to: 'users#edit'
   namespace :profile do
-    resources :orders, only: [:index, :create]
+    resources :orders, only: [:index, :create, :show]
   end
 
   namespace :admin do
