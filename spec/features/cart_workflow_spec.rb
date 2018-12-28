@@ -90,6 +90,28 @@ RSpec.describe 'Cart workflow', type: :feature do
     end
   end
 
+  describe 'users can empty their cart if it has items in it' do
+    scenario 'as a visitor' do
+      visit item_path(@item)
+    end
+    scenario 'as a registered user' do
+      user = create(:user)
+      allow_any_instance_of(ApplicationController).to receive(:current_user).and_return(user)
+      visit item_path(@item)
+    end
+    after :each do
+      click_button "Add to Cart"
+      visit cart_path
+
+      expect(page).to_not have_content('Your cart is empty')
+      click_button 'Empty cart'
+
+      expect(current_path).to eq(cart_path)
+      expect(page).to have_content('Your cart is empty')
+      expect(page).to have_link('Cart: 0')
+    end
+  end
+
   context 'as a merchant' do
     it 'does not allow merchants to add items to a cart' do
       merchant = create(:merchant)

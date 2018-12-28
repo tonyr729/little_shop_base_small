@@ -15,6 +15,12 @@ class CartController < ApplicationController
     redirect_to items_path
   end
 
+  def destroy
+    session[:cart] = nil
+    @cart = Cart.new(session[:cart])
+    redirect_to cart_path
+  end
+
   private
 
   def require_default_user_or_visitor
