@@ -10,6 +10,8 @@ RSpec.describe 'Admin User Index workflow', type: :feature do
       allow_any_instance_of(ApplicationController).to receive(:current_user).and_return(admin)
     end
     it 'displays a list of all regular users' do
+      merchant = create(:merchant)
+      admin2 = create(:admin)
       visit admin_users_path
 
       within "#user-#{@user_1.id}" do
@@ -22,6 +24,8 @@ RSpec.describe 'Admin User Index workflow', type: :feature do
         expect(page).to have_content(@user_2.created_at)
         expect(page).to have_button('Enable')
       end
+      expect(page).to_not have_content(merchant.name)
+      expect(page).to_not have_content(admin2.name)
     end
     it 'allows admin to enable an inactive user' do
       visit admin_users_path
