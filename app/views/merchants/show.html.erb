@@ -1,5 +1,13 @@
 <h2>Merchant Dashboard for <%= @merchant.name %></h2>
 
+<%= tag.div class: 'profile' do %>
+  <p><%= @merchant.email %></p>
+  <%= tag.div id: 'address' do %>
+    <p><%= @merchant.address %><br/>
+    <%= @merchant.city %>, <%= @merchant.state %> <%= @merchant.zip %></p>
+  <% end %>
+<% end %>
+
 <% if current_admin? %>
 <%= button_to "Downgrade to User", admin_merchant_downgrade_path(@merchant) %>
 <% end %>
