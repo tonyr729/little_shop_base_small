@@ -1,8 +1,8 @@
 <a href="<%= item_path(item) %>">
-<img id="item-<%= item.id %>-image" alt="image for <%= item.name %>" src="<%= item.image %>" width="<%= img_width %>%" />
+<img id="item-<%= item.id %>-image" alt="image for <%= item.name %>" src="<%= item.image %>" width="<%= img_width %>" />
 </a>
 
-<%= link_to item.name, item_path(item) %>
+<p><%= link_to item.name, item_path(item) %></p>
 <p>Price: <%= number_to_currency(item.price) %></p>
 <p>
   <strong>Sold by:</strong> <%= item.user.name %><br/>

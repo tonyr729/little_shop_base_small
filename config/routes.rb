@@ -5,6 +5,8 @@ Rails.application.routes.draw do
   resources :merchants, only: [:index]
 
   get '/cart', to: 'cart#index'
+  post '/cart/additem/:id', to: 'cart#add_item', as: 'cart_add_item'
+
   get '/login', to: 'session#new'
   post '/login', to: 'session#create'
   get '/logout', to: 'session#destroy'

@@ -1,7 +1,7 @@
 require 'rails_helper'
 
 RSpec.describe 'Site Nav', type: :feature do
-  before(:each) do
+  before :each do
     @user = create(:user)
     @merchant = create(:merchant)
     @admin = create(:admin)
@@ -17,7 +17,7 @@ RSpec.describe 'Site Nav', type: :feature do
     click_link 'Merchants'
     expect(current_path).to eq(merchants_path)
 
-    click_link 'Cart'
+    click_link 'Cart: 0'
     expect(current_path).to eq(cart_path)
 
     click_link 'Log in'
@@ -90,7 +90,7 @@ RSpec.describe 'Site Nav', type: :feature do
     expect(current_path).to eq(dashboard_path)
 
     expect(page).to_not have_link('Profile')
-    expect(page).to_not have_link('Cart')
+    expect(page).to_not have_link('Cart: 0')
     expect(page).to_not have_link('Log In')
     expect(page).to_not have_link('Register')
 
@@ -123,7 +123,7 @@ RSpec.describe 'Site Nav', type: :feature do
     expect(current_path).to eq(admin_dashboard_index_path)
 
     expect(page).to_not have_link('Profile')
-    expect(page).to_not have_link('Cart')
+    expect(page).to_not have_link('Cart: 0')
     expect(page).to_not have_link('Log In')
     expect(page).to_not have_link('Register')
 

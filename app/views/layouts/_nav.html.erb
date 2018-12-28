@@ -4,7 +4,7 @@
     <li><%= link_to 'Items', items_path %></li>
     <li><%= link_to 'Merchants', merchants_path %></li>
     <% if !current_user || current_user.default? %>
-    <li><%= link_to 'Cart', cart_path %></li>
+    <li><%= link_to "Cart: #{@cart.total_count}", cart_path %></li>
     <% end %>
     <% if current_user %>
       <% if current_user.default? %>

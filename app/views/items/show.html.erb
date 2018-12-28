@@ -1,6 +1,9 @@
 <h2><%= @item.name %></h2>
 
   <%= tag.div id: "item-#{@item.id}" do %>
-  <%= render partial: "card", locals: {item: @item, img_width: 400}%>
+  <%= render partial: "card", locals: {item: @item, img_width: 400} %>
+
+  <%= button_to 'Add to Cart', cart_add_item_path(@item) %>
+
   <p>Average time to fulfill: <%= @item.avg_fulfillment_time %>
   <% end %>

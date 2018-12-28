@@ -1,7 +1,7 @@
 require 'rails_helper'
 
-RSpec.describe 'Admin redirects' do
-  before(:each) do
+RSpec.describe 'Admin redirects', type: :feature do
+  before :each do
     admin = create(:admin)
     @merchant = create(:merchant)
     @user = create(:user)

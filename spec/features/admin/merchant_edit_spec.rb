@@ -1,7 +1,7 @@
 require 'rails_helper'
 
 RSpec.describe 'Admin Merchant Edit', type: :feature do
-  before(:each) do
+  before :each do
     admin = create(:admin)
     @merchant = create(:merchant)
     @inactive_merchant = create(:inactive_merchant)

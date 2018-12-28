@@ -1,6 +1,6 @@
 require 'rails_helper'
 
-RSpec.describe 'Upgrade/Downgrade users' do
+RSpec.describe 'Upgrade/Downgrade users', type: :feature do
   describe 'as an admin user' do
     before :each do
       @password = 'password'

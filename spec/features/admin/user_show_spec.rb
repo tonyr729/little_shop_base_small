@@ -2,7 +2,7 @@ require 'rails_helper'
 
 RSpec.describe 'Admin User Show workflow', type: :feature do
   describe 'user show page' do
-    before(:each) do
+    before :each do
       admin = create(:admin)
       @user_1 = create(:user)
 

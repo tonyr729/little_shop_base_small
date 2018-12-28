@@ -2,7 +2,7 @@ require 'rails_helper'
 
 include ActionView::Helpers::NumberHelper
 
-RSpec.describe 'Item show page' do
+RSpec.describe 'Item show page', type: :feature do
   describe 'as a visitor or registered user' do
     it 'should show details about a single item' do
       merchant = create(:merchant)

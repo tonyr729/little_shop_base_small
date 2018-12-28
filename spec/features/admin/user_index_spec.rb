@@ -2,7 +2,7 @@ require 'rails_helper'
 
 RSpec.describe 'Admin User Index workflow', type: :feature do
   describe 'user index page' do
-    before(:each) do
+    before :each do
       admin = create(:admin)
       @user_1 = create(:user)
       @user_2 = create(:inactive_user)

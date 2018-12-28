@@ -1,7 +1,7 @@
 require 'rails_helper'
 
-RSpec.describe 'Merchant Index Page' do
-  before(:each) do
+RSpec.describe 'Merchant Index Page', type: :feature do
+  before :each do
     @merchant = create(:merchant)
     @inactive_merchant = create(:inactive_merchant)
   end
@@ -17,7 +17,7 @@ RSpec.describe 'Merchant Index Page' do
     end
   end
   context 'as an admin user' do
-    before(:each) do
+    before :each do
       admin = create(:admin)
       allow_any_instance_of(ApplicationController).to receive(:current_user).and_return(admin)
     end
