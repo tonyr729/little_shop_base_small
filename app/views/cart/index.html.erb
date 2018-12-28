@@ -1,12 +1,22 @@
 <% if @cart.contents.empty? %>
-<p>Your cart is empty</p>
+  <p>Your cart is empty</p>
 <% else %>
-<% @items.each do |item| %>
-  <%= tag.div id: "item-#{item.id}" do %>
-    <%= render partial: "cart_item", locals: {item: item, img_width: 150} %>
+  <% @items.each do |item| %>
+    <%= tag.div id: "item-#{item.id}" do %>
+      <%= render partial: "cart_item", locals: {item: item, img_width: 150} %>
+    <% end %>
   <% end %>
-<% end %>
-Total: <%= number_to_currency(@cart.grand_total) %>
+  Total: <%= number_to_currency(@cart.grand_total) %>
 
-<%= button_to "Empty cart", cart_empty_path, method: :delete %>
+  <%= button_to "Empty cart", cart_empty_path, method: :delete %>
+
+  <% if current_user %>
+    <%= button_to 'Check out', profile_orders_path %>
+  <% else %>
+    You must
+    <%= link_to 'register', registration_path %>
+    or
+    <%= link_to 'log in', login_path %>
+    to check out.
+  <% end %>
 <% end %>

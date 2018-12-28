@@ -112,6 +112,23 @@ RSpec.describe 'Cart workflow', type: :feature do
     end
   end
 
+  describe 'users can checkout (or not) depending on role' do
+    scenario 'as a visitor' do
+      visit item_path(@item)
+      click_button "Add to Cart"
+      visit cart_path
+      expect(page).to have_content('You must register or log in to check out')
+    end
+    scenario 'as a registered user' do
+      user = create(:user)
+      allow_any_instance_of(ApplicationController).to receive(:current_user).and_return(user)
+      visit item_path(@item)
+      click_button "Add to Cart"
+      visit cart_path
+
+      expect(page).to have_button 'Check out'
+    end
+  end
   context 'as a merchant' do
     it 'does not allow merchants to add items to a cart' do
       merchant = create(:merchant)
