@@ -1,0 +1,7 @@
+<p><%= link_to oitem.item.name, item_path(oitem.item) %></p>
+<p><%= oitem.item.description %></p>
+<img id="item-<%= oitem.item.id %>-image" alt="image for <%= oitem.item.name %>" src="<%= oitem.item.image %>" width="<%= img_width %>" />
+<p>Merchant: <%= oitem.item.user.name %></p>
+<p>Price: <%= number_to_currency(oitem.price) %></p>
+<p>Quantity: <%= oitem.quantity %></p>
+<p>Subtotal: <%= number_to_currency(oitem.subtotal) %></p>

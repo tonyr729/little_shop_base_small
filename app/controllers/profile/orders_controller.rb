@@ -21,6 +21,10 @@ class Profile::OrdersController < ApplicationController
     redirect_to profile_path
   end
 
+  def show
+    @order = Order.find(params[:id])
+  end
+
   private
 
   def require_default_user
