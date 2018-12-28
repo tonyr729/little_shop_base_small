@@ -1,23 +1,39 @@
 require 'rails_helper'
 
+include ActionView::Helpers::NumberHelper
+
 RSpec.describe 'Cart workflow', type: :feature do
   before :each do
     @merchant = create(:merchant)
     @item = create(:item, user: @merchant)
   end
 
-  context 'as a visitor' do
-    it 'shows an empty cart when no items are added' do
+  describe 'shows an empty cart when no items are added' do
+    scenario 'as a visitor' do
       visit cart_path
-
+    end
+    scenario 'as a registered user' do
+      user = create(:user)
+      allow_any_instance_of(ApplicationController).to receive(:current_user).and_return(user)
+      visit cart_path
+    end
+    after :each do
       expect(page).to have_content('Your cart is empty')
       expect(page).to_not have_button('Emtpy cart')
     end
+  end
 
-    it 'allows visitors to add items to cart' do
+  describe 'allows visitors to add items to cart' do
+    scenario 'as a visitor' do
       visit item_path(@item)
+    end
+    scenario 'as a registered user' do
+      user = create(:user)
+      allow_any_instance_of(ApplicationController).to receive(:current_user).and_return(user)
+      visit item_path(@item)
+    end
+    after :each do
       click_button "Add to Cart"
-
       expect(page).to have_content("You have 1 package of #{@item.name} in your cart")
       expect(page).to have_link("Cart: 1")
       expect(current_path).to eq(items_path)
@@ -30,30 +46,47 @@ RSpec.describe 'Cart workflow', type: :feature do
     end
   end
 
-  context 'as a registered user' do
+  describe 'shows an empty cart when no items are added' do
     before :each do
+      @item_2 = create(:item, user: @merchant)
+    end
+    scenario 'as a visitor' do
+      visit item_path(@item)
+    end
+    scenario 'as a registered user' do
       user = create(:user)
       allow_any_instance_of(ApplicationController).to receive(:current_user).and_return(user)
+      visit item_path(@item)
     end
-    it 'shows an empty cart when no items are added' do
+    after :each do
+      click_button "Add to Cart"
+      visit item_path(@item_2)
+      click_button "Add to Cart"
+      visit item_path(@item_2)
+      click_button "Add to Cart"
+
       visit cart_path
 
-      expect(page).to have_content('Your cart is empty')
-      expect(page).to_not have_button('Emtpy cart')
-    end
-    it 'allows visitors to add items to cart' do
-      visit item_path(@item)
-      click_button "Add to Cart"
+      expect(page).to_not have_content('Your cart is empty')
+      expect(page).to have_button('Empty cart')
 
-      expect(page).to have_content("You have 1 package of #{@item.name} in your cart")
-      expect(page).to have_link("Cart: 1")
-      expect(current_path).to eq(items_path)
-
-      visit item_path(@item)
-      click_button "Add to Cart"
-
-      expect(page).to have_content("You have 2 packages of #{@item.name} in your cart")
-      expect(page).to have_link("Cart: 2")
+      within "#item-#{@item.id}" do
+        expect(page).to have_content(@item.name)
+        expect(page.find("#item-#{@item.id}-image")['src']).to have_content(@item.image)
+        expect(page).to have_content("Merchant: #{@item.user.name}")
+        expect(page).to have_content("Price: #{number_to_currency(@item.price)}")
+        expect(page).to have_content("Quantity: 1")
+        expect(page).to have_content("Subtotal: #{number_to_currency(@item.price*1)}")
+      end
+      within "#item-#{@item_2.id}" do
+        expect(page).to have_content(@item_2.name)
+        expect(page.find("#item-#{@item_2.id}-image")['src']).to have_content(@item_2.image)
+        expect(page).to have_content("Merchant: #{@item_2.user.name}")
+        expect(page).to have_content("Price: #{number_to_currency(@item_2.price)}")
+        expect(page).to have_content("Quantity: 2")
+        expect(page).to have_content("Subtotal: #{number_to_currency(@item_2.price*2)}")
+      end
+      expect(page).to have_content("Total: #{number_to_currency(@item.price + (@item_2.price*2)) }")
     end
   end
 

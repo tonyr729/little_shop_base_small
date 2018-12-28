@@ -20,7 +20,18 @@ class Cart
 
   def items
     @contents.keys.map do |item_id|
-      Item.find(item_id)
+      Item.includes(:user).find(item_id)
     end
+  end
+
+  def subtotal(item_id)
+    item = Item.find(item_id)
+    item.price * count_of(item_id)
+  end
+
+  def grand_total
+    @contents.keys.map do |item_id|
+      subtotal(item_id)
+    end.sum
   end
 end
