@@ -1,0 +1,9 @@
+<% if @orders.empty? %>
+You have no orders yet
+<% else %>
+<ul>
+  <% @orders.each do |order| %>
+  <li>Order ID <%= order.id %></li>
+  <% end %>
+</ul>
+<% end %>

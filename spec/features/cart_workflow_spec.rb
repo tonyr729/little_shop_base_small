@@ -176,11 +176,22 @@ RSpec.describe 'Cart workflow', type: :feature do
     scenario 'as a registered user' do
       user = create(:user)
       allow_any_instance_of(ApplicationController).to receive(:current_user).and_return(user)
+      visit profile_orders_path
+      expect(page).to have_content('You have no orders yet')
+
       visit item_path(@item)
       click_button "Add to Cart"
       visit cart_path
 
-      expect(page).to have_button 'Check out'
+      click_button 'Check out'
+
+      expect(current_path).to eq(profile_path)
+      expect(page).to have_content('You have successfully checked out!')
+
+      visit profile_orders_path
+      expect(page).to_not have_content('You have no orders yet')
+      last_order = Order.last
+      expect(page).to have_content("Order ID #{last_order.id}")
     end
   end
 
