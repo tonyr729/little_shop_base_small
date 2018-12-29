@@ -19,6 +19,11 @@ Rails.application.routes.draw do
   resources :users, only: [:create, :update]
 
   get '/dashboard', to: 'merchants#show', as: 'dashboard'
+  namespace :dashboard do
+    resources :items, only: [:index, :new, :edit, :destroy]
+    post '/items/:id/enable', to: 'items#enable', as: 'enable_item'
+    post '/items/:id/disable', to: 'items#disable', as: 'disable_item'
+  end
   get '/profile', to: 'profile#index', as: 'profile'
 
   get '/profile/edit', to: 'users#edit'

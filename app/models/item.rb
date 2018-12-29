@@ -37,4 +37,8 @@ class Item < ApplicationRecord
       return nil
     end
   end
+
+  def ever_ordered?
+    OrderItem.find_by_item_id(self.id) !=  nil
+  end
 end

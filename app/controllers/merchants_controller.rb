@@ -16,6 +16,6 @@ class MerchantsController < ApplicationController
   private
 
   def require_merchant
-    render file: 'errors/not_found', status: 404 unless current_user && current_user.merchant?
+    render file: 'errors/not_found', status: 404 unless current_user && current_merchant?
   end
 end

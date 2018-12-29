@@ -56,5 +56,15 @@ RSpec.describe Item, type: :model do
 
       expect(item.avg_fulfillment_time).to include("1 day 12:15:00")
     end
+
+    it '.ever_ordered?' do
+      item_1 = create(:item)
+      item_2 = create(:item)
+      order = create(:completed_order)
+      create(:fulfilled_order_item, order: order, item: item_1, created_at: 4.days.ago, updated_at: 1.days.ago)
+
+      expect(item_1.ever_ordered?).to eq(true)
+      expect(item_2.ever_ordered?).to eq(false)
+    end
   end
 end
