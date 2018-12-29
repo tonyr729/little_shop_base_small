@@ -10,6 +10,10 @@ class Dashboard::ItemsController < ApplicationController
     @item = Item.new
   end
 
+  def edit
+    @item = Item.find(params[:id])
+  end
+
   def create
     ip = item_params
     if ip[:image].empty?
@@ -22,6 +26,23 @@ class Dashboard::ItemsController < ApplicationController
       redirect_to dashboard_items_path
     else
       render :new
+    end
+  end
+
+  def update
+    @item = Item.find(params[:id])
+
+    ip = item_params
+    if ip[:image].empty?
+      ip[:image] = 'https://picsum.photos/200/300/?image=524'
+    end
+    ip[:active] = true
+    @item.update(ip)
+    if @item.save
+      flash[:success] = "#{@item.name} has been updated!"
+      redirect_to dashboard_items_path
+    else
+      render :edit
     end
   end
 
