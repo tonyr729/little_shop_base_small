@@ -46,6 +46,14 @@ class Dashboard::ItemsController < ApplicationController
     end
   end
 
+  def enable
+    set_item_active(true)
+  end
+
+  def disable
+    set_item_active(false)
+  end
+
   private
 
   def item_params
@@ -55,4 +63,12 @@ class Dashboard::ItemsController < ApplicationController
   def restrict_access
     render file: 'errors/not_found', status: 404 unless current_user && (current_merchant? || current_admin?)
   end
+
+  def set_item_active(state)
+    item = Item.find(params[:id])
+    item.active = state
+    item.save
+    redirect_to dashboard_items_path
+  end
+
 end

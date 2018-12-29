@@ -197,5 +197,20 @@ RSpec.describe 'Merchant Dashboard Items page' do
         expect(page).to have_content("Inventory is not a number")
       end
     end
+    it 'allows me to disable then re-enable an active item' do
+      visit dashboard_items_path
+      within "#item-#{@items[0].id}" do
+        click_button 'Disable Item'
+      end
+      expect(current_path).to eq(dashboard_items_path)
+      within "#item-#{@items[0].id}" do
+        expect(page).to_not have_button('Disable Item')
+        click_button 'Enable Item'
+      end
+      expect(current_path).to eq(dashboard_items_path)
+      within "#item-#{@items[0].id}" do
+        expect(page).to_not have_button('Enable Item')
+      end
+    end
   end
 end
