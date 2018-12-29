@@ -20,7 +20,7 @@ Rails.application.routes.draw do
 
   get '/dashboard', to: 'merchants#show', as: 'dashboard'
   namespace :dashboard do
-    resources :items, only: [:index, :new, :edit, :destroy]
+    resources :items, only: [:index, :new, :edit, :destroy, :create]
     post '/items/:id/enable', to: 'items#enable', as: 'enable_item'
     post '/items/:id/disable', to: 'items#disable', as: 'disable_item'
   end

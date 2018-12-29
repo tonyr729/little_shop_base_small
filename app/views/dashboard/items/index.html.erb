@@ -1,0 +1,12 @@
+<h2>My Items for Sale</h2>
+
+<%= link_to 'Add new Item', new_dashboard_item_path %>
+
+<% @items.each do |item| %>
+
+  <%= tag.div id: "item-#{item.id}" do %>
+  <%= render partial: "item_card", locals: {item: item, img_width: 200} %>
+  <% end %>
+
+
+<% end %>

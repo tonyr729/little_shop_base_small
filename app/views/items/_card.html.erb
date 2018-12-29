@@ -3,6 +3,7 @@
 </a>
 
 <p><%= link_to item.name, item_path(item) %></p>
+<p>Description: <%= item.description %></p>
 <p>Price: <%= number_to_currency(item.price) %></p>
 <p>
   <strong>Sold by:</strong> <%= item.user.name %><br/>
