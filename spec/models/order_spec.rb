@@ -81,5 +81,37 @@ RSpec.describe Order, type: :model do
       expect(orders[2].my_revenue_value(merchants[0].id)).to eq(45)
       expect(orders[2].my_revenue_value(merchants[1].id)).to eq(0)
     end
+
+    it '.my_items' do
+      merchants = create_list(:merchant, 2)
+      item_1 = create(:item, user: merchants[0])
+      item_2 = create(:item, user: merchants[1])
+      item_3 = create(:item, user: merchants[0])
+      order = create(:order)
+      create(:order_item, order: order, item: item_1, price: 1, quantity: 3)
+      create(:order_item, order: order, item: item_2, price: 2, quantity: 7)
+      create(:fulfilled_order_item, order: order, item: item_3, price: 1.50, quantity: 4)
+
+      expect(order.my_items(merchants[0])).to eq([item_1])
+      expect(order.my_items(merchants[1])).to eq([item_2])
+    end
+
+    it '.item_price' do
+      merchant = create(:merchant)
+      item_1 = create(:item, user: merchant)
+      order = create(:order)
+      oi = create(:order_item, order: order, item: item_1, price: 345.67, quantity: 3)
+
+      expect(order.item_price(item_1.id)).to eq(oi.price)
+    end
+
+    it '.item_quantity' do
+      merchant = create(:merchant)
+      item_1 = create(:item, user: merchant)
+      order = create(:order)
+      oi = create(:order_item, order: order, item: item_1, price: 345.67, quantity: 397)
+
+      expect(order.item_quantity(item_1.id)).to eq(oi.quantity)
+    end
   end
 end

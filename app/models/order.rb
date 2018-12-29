@@ -35,4 +35,22 @@ class Order < ApplicationRecord
       .pluck("sum(order_items.quantity * order_items.price)")
       .first.to_i
   end
+
+  def my_items(merchant_id)
+    Item.joins(order_items: :order)
+      .where(
+        :merchant_id => merchant_id,
+        :"orders.id" => self.id,
+        :"orders.status" => :pending,
+        :"order_items.fulfilled" => false
+      )
+  end
+
+  def item_price(item_id)
+    order_items.where(item_id: item_id).pluck(:price).first
+  end
+
+  def item_quantity(item_id)
+    order_items.where(item_id: item_id).pluck(:quantity).first
+  end
 end

@@ -51,6 +51,43 @@ RSpec.describe 'Merchant Dashboard page' do
         end
       end
     end
+    describe 'when I have orders with items I sell' do
+      it 'allows me to fulfill those parts of an order' do
+        user = create(:user)
+        merchant = create(:merchant)
+        merchant_2 = create(:merchant)
+        item = create(:item, user: merchant)
+        item_2 = create(:item, user: merchant_2)
+        order = create(:order, user: user)
+        create(:order_item, order: order, item: item, price: 1, quantity: 1)
+        create(:order_item, order: order, item: item_2, price: 1, quantity: 1)
+
+        allow_any_instance_of(ApplicationController).to receive(:current_user).and_return(merchant)
+
+        visit dashboard_path
+        within "#order-#{order.id}" do
+          click_link("Order ID #{order.id}")
+        end
+
+        expect(current_path).to eq(dashboard_order_path(order))
+        within '#user-details' do
+          expect(page).to have_content(user.name)
+          expect(page).to have_content(user.address)
+          expect(page).to have_content("#{user.city}, #{user.state} #{user.zip}")
+        end
+        within '#order-details' do
+          within "#item-#{item.id}" do
+            expect(page).to have_link(item.name)
+            expect(page.find("#item-#{item.id}-image")['src']).to have_content(item.image)
+            expect(page).to have_content("Price: #{number_to_currency(order.item_price(item.id))}")
+            expect(page).to have_content("Quantity: #{order.item_quantity(item.id)}")
+            expect(page).to have_button('Fulfill Item')
+          end
+          expect(page).to_not have_css("#item-#{item_2.id}")
+          expect(page).to_not have_content(item_2.name)
+        end
+      end
+    end
   end
 
   context 'as an admin' do

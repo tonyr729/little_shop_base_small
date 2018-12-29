@@ -1,6 +1,4 @@
-class Dashboard::ItemsController < ApplicationController
-  before_action :restrict_access
-
+class Dashboard::ItemsController < Dashboard::BaseController
   def index
     merchant = current_user
     @items = merchant.items.order(:name)
@@ -68,10 +66,6 @@ class Dashboard::ItemsController < ApplicationController
 
   def item_params
     params.require(:item).permit(:name, :description, :image, :price, :inventory)
-  end
-
-  def restrict_access
-    render file: 'errors/not_found', status: 404 unless current_user && (current_merchant? || current_admin?)
   end
 
   def set_item_active(state)

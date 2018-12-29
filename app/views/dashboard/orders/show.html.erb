@@ -1,0 +1,20 @@
+<h2>Order Details</h2>
+
+<%= tag.div id: 'user-details' do %>
+  <p>Name: <%= @order.user.name %></p>
+  <p>Shipping Address:<br/>
+  <%= @order.user.address %>
+  <%= @order.user.city %>, <%= @order.user.state %> <%= @order.user.zip %>
+<% end %>
+
+<%= tag.div id: 'order-details' do %>
+  <% @items.each do |item| %>
+    <%= tag.div id: "item-#{item.id}" do %>
+      <p><%= link_to item.name, item_path(item) %></p>
+      <p><img id="item-<%= item.id %>-image" alt="image for <%= item.name %>" src="<%= item.image %>" width="150" /></p>
+      <p>Price: <%= number_to_currency(@order.item_price(item.id)) %></p>
+      <p>Quantity: <%= @order.item_quantity(item.id) %></p>
+      <p><%= button_to 'Fulfill Item', dashboard_order_item_fulfill_path(@order, item) %></p>
+    <% end %>
+  <% end %>
+<% end %>
