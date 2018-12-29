@@ -11,6 +11,7 @@ class MerchantsController < ApplicationController
 
   def show
     @merchant = current_user
+    @orders = @merchant.my_pending_orders
   end
 
   private

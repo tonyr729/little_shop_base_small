@@ -37,5 +37,49 @@ RSpec.describe Order, type: :model do
     it '.total_cost' do
       expect(@order.total_cost).to eq((@oi_1.quantity*@oi_1.price) + (@oi_2.quantity*@oi_2.price))
     end
+
+    it '.my_item_count' do
+      merchants = create_list(:merchant, 2)
+      item_1 = create(:item, user: merchants[0])
+      item_3 = create(:item, user: merchants[0])
+      item_2 = create(:item, user: merchants[1])
+      orders = create_list(:order, 3)
+      create(:order_item, order: orders[0], item: item_1, price: 1, quantity: 3)
+      create(:order_item, order: orders[0], item: item_3, price: 1, quantity: 7)
+      create(:order_item, order: orders[1], item: item_2, price: 1, quantity: 6)
+      create(:order_item, order: orders[1], item: item_3, price: 1, quantity: 2)
+      create(:order_item, order: orders[2], item: item_1, price: 1, quantity: 9)
+
+      expect(orders[0].my_item_count(merchants[0].id)).to eq(10)
+      expect(orders[0].my_item_count(merchants[1].id)).to eq(0)
+
+      expect(orders[1].my_item_count(merchants[0].id)).to eq(2)
+      expect(orders[1].my_item_count(merchants[1].id)).to eq(6)
+
+      expect(orders[2].my_item_count(merchants[0].id)).to eq(9)
+      expect(orders[2].my_item_count(merchants[1].id)).to eq(0)
+    end
+
+    it '.my_revenue_value' do
+      merchants = create_list(:merchant, 2)
+      item_1 = create(:item, user: merchants[0])
+      item_3 = create(:item, user: merchants[0])
+      item_2 = create(:item, user: merchants[1])
+      orders = create_list(:order, 3)
+      create(:order_item, order: orders[0], item: item_1, price: 1, quantity: 3)
+      create(:order_item, order: orders[0], item: item_3, price: 2, quantity: 7)
+      create(:order_item, order: orders[1], item: item_2, price: 3, quantity: 6)
+      create(:order_item, order: orders[1], item: item_3, price: 4, quantity: 2)
+      create(:order_item, order: orders[2], item: item_1, price: 5, quantity: 9)
+
+      expect(orders[0].my_revenue_value(merchants[0].id)).to eq(17)
+      expect(orders[0].my_revenue_value(merchants[1].id)).to eq(0)
+
+      expect(orders[1].my_revenue_value(merchants[0].id)).to eq(8)
+      expect(orders[1].my_revenue_value(merchants[1].id)).to eq(18)
+
+      expect(orders[2].my_revenue_value(merchants[0].id)).to eq(45)
+      expect(orders[2].my_revenue_value(merchants[1].id)).to eq(0)
+    end
   end
 end

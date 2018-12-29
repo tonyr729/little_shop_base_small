@@ -19,4 +19,20 @@ class Order < ApplicationRecord
     oi = order_items.pluck("sum(quantity*price)")
     oi.sum
   end
+
+  def my_item_count(merchant_id)
+    self.order_items
+      .joins(:item)
+      .where("items.merchant_id=?", merchant_id)
+      .pluck("sum(order_items.quantity)")
+      .first.to_i
+  end
+
+  def my_revenue_value(merchant_id)
+    self.order_items
+      .joins(:item)
+      .where("items.merchant_id=?", merchant_id)
+      .pluck("sum(order_items.quantity * order_items.price)")
+      .first.to_i
+  end
 end

@@ -4,6 +4,7 @@ class Admin::MerchantsController < Admin::BaseController
     if @merchant.default?
       redirect_to admin_user_path(@merchant)
     else
+      @orders = @merchant.my_pending_orders
       render :'merchants/show'
     end
   end

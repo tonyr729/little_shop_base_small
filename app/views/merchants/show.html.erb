@@ -13,3 +13,17 @@
 <% if current_admin? %>
 <%= button_to "Downgrade to User", admin_merchant_downgrade_path(@merchant) %>
 <% end %>
+
+<%= tag.div id: 'orders' do %>
+  <% if @orders.empty? %>
+    You don't have any pending orders to fulfill
+  <% else %>
+    <ul>
+      <% @orders.each do |order| %>
+        <%= tag.li id: "order-#{order.id}" do %>
+          <%= render partial: "order_card", locals: {order: order} %>
+        <% end %>
+      <% end %>
+    </ul>
+  <% end %>
+<% end %>

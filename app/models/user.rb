@@ -9,4 +9,9 @@ class User < ApplicationRecord
   validates :email, presence: true, uniqueness: true
 
   enum role: [:default, :merchant, :admin]
+
+  def my_pending_orders
+    Order.joins(order_items: :item)
+      .where("items.merchant_id=? AND orders.status=? AND order_items.fulfilled=?", self.id, 0, false)
+  end
 end
