@@ -29,6 +29,16 @@ class Dashboard::ItemsController < ApplicationController
     end
   end
 
+  def destroy
+    @item = Item.find(params[:id])
+    if @item && @item.ever_ordered?
+      flash[:error] = "Attempt to delete #{@item.name} was thwarted!"
+    elsif @item
+      @item.destroy
+    end
+    redirect_to dashboard_items_path
+  end
+
   def update
     @item = Item.find(params[:id])
 

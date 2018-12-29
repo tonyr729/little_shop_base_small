@@ -212,5 +212,24 @@ RSpec.describe 'Merchant Dashboard Items page' do
         expect(page).to_not have_button('Enable Item')
       end
     end
+    describe 'when trying to delete an item' do
+      it 'works when nobody has purchased that item before' do
+        visit dashboard_items_path
+        within "#item-#{@items[1].id}" do
+          click_button 'Delete Item'
+        end
+        expect(current_path).to eq(dashboard_items_path)
+        expect(page).to_not have_css("#item-#{@items[1].id}")
+        expect(page).to_not have_content(@items[1].name)
+      end
+      it 'fails if someone has purchased that item before' do
+        visit dashboard_items_path
+        page.driver.delete(dashboard_item_path(@items[0]))
+        expect(page.status_code).to eq(302)
+        visit dashboard_items_path
+        expect(page).to have_css("#item-#{@items[0].id}")
+        expect(page).to have_content("Attempt to delete #{@items[0].name} was thwarted!")
+      end
+    end
   end
 end
