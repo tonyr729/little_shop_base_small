@@ -14,7 +14,17 @@
       <p><img id="item-<%= item.id %>-image" alt="image for <%= item.name %>" src="<%= item.image %>" width="150" /></p>
       <p>Price: <%= number_to_currency(@order.item_price(item.id)) %></p>
       <p>Quantity: <%= @order.item_quantity(item.id) %></p>
-      <p><%= button_to 'Fulfill Item', dashboard_order_item_fulfill_path(@order, item) %></p>
+      <p>
+      <% if @order.item_fulfilled?(item.id) %>
+        Fulfilled!
+      <% else %>
+        <% if current_user.inventory_check(item.id) >= @order.item_quantity(item.id) %>
+        <%= button_to 'Fulfill Item', dashboard_order_item_fulfill_path(@order, item) %>
+        <% else %>
+        Cannot fulfill, not enough inventory
+        <% end %>
+      <% end %>
+      </p>
     <% end %>
   <% end %>
 <% end %>

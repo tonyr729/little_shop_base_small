@@ -14,4 +14,9 @@ class User < ApplicationRecord
     Order.joins(order_items: :item)
       .where("items.merchant_id=? AND orders.status=? AND order_items.fulfilled=?", self.id, 0, false)
   end
+
+  def inventory_check(item_id)
+    return nil unless self.merchant?
+    Item.where(id: item_id, merchant_id: self.id).pluck(:inventory).first
+  end
 end

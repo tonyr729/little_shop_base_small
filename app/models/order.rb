@@ -41,8 +41,7 @@ class Order < ApplicationRecord
       .where(
         :merchant_id => merchant_id,
         :"orders.id" => self.id,
-        :"orders.status" => :pending,
-        :"order_items.fulfilled" => false
+        :"orders.status" => :pending
       )
   end
 
@@ -52,5 +51,9 @@ class Order < ApplicationRecord
 
   def item_quantity(item_id)
     order_items.where(item_id: item_id).pluck(:quantity).first
+  end
+
+  def item_fulfilled?(item_id)
+    order_items.where(item_id: item_id).pluck(:fulfilled).first
   end
 end

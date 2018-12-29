@@ -92,7 +92,7 @@ RSpec.describe Order, type: :model do
       create(:order_item, order: order, item: item_2, price: 2, quantity: 7)
       create(:fulfilled_order_item, order: order, item: item_3, price: 1.50, quantity: 4)
 
-      expect(order.my_items(merchants[0])).to eq([item_1])
+      expect(order.my_items(merchants[0])).to eq([item_1, item_3])
       expect(order.my_items(merchants[1])).to eq([item_2])
     end
 
@@ -112,6 +112,18 @@ RSpec.describe Order, type: :model do
       oi = create(:order_item, order: order, item: item_1, price: 345.67, quantity: 397)
 
       expect(order.item_quantity(item_1.id)).to eq(oi.quantity)
+    end
+
+    it '.item_fulfilled?' do
+      merchant = create(:merchant)
+      item_1 = create(:item, user: merchant)
+      item_2 = create(:item, user: merchant)
+      order = create(:order)
+      oi = create(:order_item, order: order, item: item_1, price: 345.67, quantity: 397)
+      oi = create(:fulfilled_order_item, order: order, item: item_2, price: 345.67, quantity: 397)
+
+      expect(order.item_fulfilled?(item_1.id)).to eq(false)
+      expect(order.item_fulfilled?(item_2.id)).to eq(true)
     end
   end
 end

@@ -56,13 +56,18 @@ RSpec.describe 'Merchant Dashboard page' do
         user = create(:user)
         merchant = create(:merchant)
         merchant_2 = create(:merchant)
-        item = create(:item, user: merchant)
+        item = create(:item, user: merchant, inventory: 100)
+        item_3 = create(:item, user: merchant)
         item_2 = create(:item, user: merchant_2)
         order = create(:order, user: user)
-        create(:order_item, order: order, item: item, price: 1, quantity: 1)
+        create(:order_item, order: order, item: item, price: 1, quantity: 10)
         create(:order_item, order: order, item: item_2, price: 1, quantity: 1)
+        create(:fulfilled_order_item, order: order, item: item_3, price: 1, quantity: 1)
 
         allow_any_instance_of(ApplicationController).to receive(:current_user).and_return(merchant)
+
+        visit item_path(item)
+        expect(page).to have_content("In stock: 100")
 
         visit dashboard_path
         within "#order-#{order.id}" do
@@ -76,6 +81,12 @@ RSpec.describe 'Merchant Dashboard page' do
           expect(page).to have_content("#{user.city}, #{user.state} #{user.zip}")
         end
         within '#order-details' do
+          expect(page).to_not have_css("#item-#{item_2.id}")
+          within "#item-#{item_3.id}" do
+            expect(page).to have_content("Fulfilled!")
+            expect(page).to_not have_button('Fulfill Item')
+          end
+
           within "#item-#{item.id}" do
             expect(page).to have_link(item.name)
             expect(page.find("#item-#{item.id}-image")['src']).to have_content(item.image)
@@ -85,6 +96,32 @@ RSpec.describe 'Merchant Dashboard page' do
           end
           expect(page).to_not have_css("#item-#{item_2.id}")
           expect(page).to_not have_content(item_2.name)
+
+          click_button 'Fulfill Item'
+        end
+        expect(current_path).to eq(dashboard_order_path(order))
+        within "#item-#{item.id}" do
+          expect(page).to have_content("Fulfilled!")
+          expect(page).to_not have_button('Fulfill Item')
+        end
+
+        visit item_path(item)
+        expect(page).to have_content("In stock: 90")
+      end
+      it 'blocks me from fulfilling an order if I lack inventory' do
+        user = create(:user)
+        merchant = create(:merchant)
+        item = create(:item, user: merchant, inventory: 10)
+        order = create(:order, user: user)
+        create(:order_item, order: order, item: item, price: 1, quantity: 11)
+
+        allow_any_instance_of(ApplicationController).to receive(:current_user).and_return(merchant)
+
+        visit dashboard_order_path(order)
+
+        within "#item-#{item.id}" do
+          expect(page).to_not have_button('Fulfill Item')
+          expect(page).to have_content("Cannot fulfill, not enough inventory")
         end
       end
     end

@@ -33,5 +33,16 @@ RSpec.describe User, type: :model do
       expect(merchants[0].my_pending_orders).to eq([orders[0], orders[2]])
       expect(merchants[1].my_pending_orders).to eq([orders[1]])
     end
+
+    it '.inventory_check' do
+      admin = create(:admin)
+      user = create(:user)
+      merchant = create(:merchant)
+      item = create(:item, user: merchant, inventory: 100)
+
+      expect(admin.inventory_check(item.id)).to eq(nil)
+      expect(user.inventory_check(item.id)).to eq(nil)
+      expect(merchant.inventory_check(item.id)).to eq(item.inventory)
+    end
   end
 end
