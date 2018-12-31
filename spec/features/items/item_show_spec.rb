@@ -20,7 +20,7 @@ RSpec.describe 'Item show page', type: :feature do
         expect(page).to have_content("Sold by: #{item.user.name}")
         expect(page).to have_content("Price: #{number_to_currency(item.price)}")
         expect(page).to have_content("In stock: #{item.inventory}")
-        expect(page).to have_content("Average time to fulfill: #{item.avg_fulfillment_time}")
+        expect(page).to have_content("Average time to fulfill: 12 hours, 15 minutes")
       end
 
     end

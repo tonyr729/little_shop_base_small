@@ -1,11 +1,15 @@
-<a href="<%= item_path(item) %>">
-<img id="item-<%= item.id %>-image" alt="image for <%= item.name %>" src="<%= item.image %>" width="<%= img_width %>" />
-</a>
+<div class="card float-left m-3" style="width: 18rem;">
+  <a href="<%= item_path(item) %>">
+    <img class="card-img-top" id="item-<%= item.id %>-image" alt="image for <%= item.name %>" src="<%= item.image %>" width="<%= img_width %>" />
+  </a>
 
-<p><%= link_to item.name, item_path(item) %></p>
-<p>Description: <%= item.description %></p>
-<p>Price: <%= number_to_currency(item.price) %></p>
-<p>
-  <strong>Sold by:</strong> <%= item.user.name %><br/>
-  <strong>In stock:</strong> <%= item.inventory %>
-</p>
+  <div class="card-body">
+    <h5 class="card-title"><%= link_to item.name, item_path(item) %></h5>
+    <p>Description: <em><%= item.description %></em></p>
+    <p>Price: <%= number_to_currency(item.price) %></p>
+    <p>
+      <strong>Sold by:</strong> <%= item.user.name %><br/>
+      <strong>In stock:</strong> <%= item.inventory %>
+    </p>
+  </div>
+</div>

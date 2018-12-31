@@ -17,6 +17,7 @@ RSpec.describe 'Upgrade/Downgrade users', type: :feature do
       fill_in :password, with: @password
       click_button 'Log in'
     end
+
     it 'upgrades a regular user to a merchant' do
       visit admin_users_path
       expect(page).to have_content(@user.name)
@@ -56,7 +57,9 @@ RSpec.describe 'Upgrade/Downgrade users', type: :feature do
       click_button 'Log in'
       expect(current_path).to eq(profile_path)
       visit merchants_path
-      expect(page).to_not have_content(@merchant.name)
+      within '#body-content-no-nav' do
+        expect(page).to_not have_content(@merchant.name)
+      end
     end
   end
 end

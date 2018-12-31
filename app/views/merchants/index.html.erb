@@ -1,5 +1,40 @@
 <h2>Merchants</h2>
 
+<table>
+  <thead>
+    <tr>
+      <th>Name, Location</th>
+      <th>Registration</th>
+      <% if current_admin? %>
+      <th></th>
+      <% end %>
+    </tr>
+  </thead>
+
+  <tbody>
+<% @merchants.each do |merchant| %>
+  <%= tag.tr id: "merchant-#{merchant.id}" do %>
+  <td>
+    <% if current_admin? %><%= link_to merchant.name, admin_merchant_path(merchant) %><% else %><%= merchant.name %><% end %>,
+    <%= merchant.city %> <%= merchant.state %></td>
+  <td>Registered: <%= merchant.created_at %></td>
+  <% if current_admin? %>
+  <td>
+      <% if merchant.active? %>
+      <%= button_to 'Disable', admin_merchant_disable_path(merchant) %>
+      <% else %>
+      <%= button_to 'Enable', admin_merchant_enable_path(merchant) %>
+      <% end %>
+    <% end %>
+  </td>
+  <% end %>
+<% end %>
+
+</tbody>
+</table>
+
+<hr>
+
 <%= tag.div id: "statistics" do %>
   <%= tag.div id: "top-3-revenue-merchants" do %>
     <h4>Top 3 Merchants by Revenue</h4>
@@ -65,23 +100,5 @@
     <% end %>
     <% end unless @top_3_quantity_orders.nil? %>
     </ol>
-  <% end %>
-<% end %>
-
-<% @merchants.each do |merchant| %>
-  <%= tag.div id: "merchant-#{merchant.id}" do %>
-  <p>
-    <% if current_admin? %><%= link_to merchant.name, admin_merchant_path(merchant) %><% else %><%= merchant.name %><% end %>,
-    <%= merchant.city %> <%= merchant.state %><br/>
-    Registered: <%= merchant.created_at %>
-    <% if current_admin? %>
-    <br/>
-      <% if merchant.active? %>
-      <%= button_to 'Disable', admin_merchant_disable_path(merchant) %>
-      <% else %>
-      <%= button_to 'Enable', admin_merchant_enable_path(merchant) %>
-      <% end %>
-    <% end %>
-  </p>
   <% end %>
 <% end %>

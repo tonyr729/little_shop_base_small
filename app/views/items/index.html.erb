@@ -2,6 +2,7 @@
 
 <%= tag.div id: "statistics" do %>
   <%= tag.div id: "popular-items" do %>
+  <h4>Popular Items</h4>
     <ol>
     <% @popular_items.each do |item| %>
     <li><%= item.name %>, total ordered: <%= item.total_ordered %></li>
@@ -9,6 +10,7 @@
     </ol>
   <% end %>
   <%= tag.div id: "unpopular-items" do %>
+  <h4>Least Popular Items</h4>
     <ol>
     <% @unpopular_items.each do |item| %>
     <li><%= item.name %>, total ordered: <%= item.total_ordered %></li>
