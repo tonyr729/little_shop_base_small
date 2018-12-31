@@ -3,6 +3,9 @@
   <p>Created: <%= @order.created_at %></p>
   <p>Last Update: <%= @order.last_update %></p>
   <p>Status: <%= @order.status %></p>
+  <% if @order.status == 'pending' %>
+  <p><%= button_to 'Cancel Order', profile_order_path(@order), method: :delete %></p>
+  <% end %>
 
   <% @order.order_items.each do |oitem| %>
     <%= tag.div id: "oitem-#{oitem.id}" do %>

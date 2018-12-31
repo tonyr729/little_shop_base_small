@@ -25,6 +25,22 @@ class Profile::OrdersController < ApplicationController
     @order = Order.find(params[:id])
   end
 
+  def destroy
+    order = Order.find(params[:id])
+    if order.status == 'pending'
+      order.order_items.each do |oi|
+        item = Item.find(oi.item_id)
+        item.inventory += oi.quantity
+        item.save
+        oi.fulfilled = false
+        oi.save
+      end
+      order.status = :cancelled
+      order.save
+    end
+    redirect_to profile_order_path(order)
+  end
+
   private
 
   def require_default_user

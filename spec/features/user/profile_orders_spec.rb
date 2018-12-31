@@ -67,6 +67,8 @@ RSpec.describe 'Profile Orders page', type: :feature do
         expect(page).to have_content("Price: #{number_to_currency(@oi_1.price)}")
         expect(page).to have_content("Quantity: #{@oi_1.quantity}")
         expect(page).to have_content("Subtotal: #{number_to_currency(@oi_1.price*@oi_1.quantity)}")
+        expect(page).to have_content("Subtotal: #{number_to_currency(@oi_1.price*@oi_1.quantity)}")
+        expect(page).to have_content("Fulfilled: No")
       end
       within "#oitem-#{@oi_2.id}" do
         expect(page).to have_content(@oi_2.item.name)
@@ -76,9 +78,75 @@ RSpec.describe 'Profile Orders page', type: :feature do
         expect(page).to have_content("Price: #{number_to_currency(@oi_2.price)}")
         expect(page).to have_content("Quantity: #{@oi_2.quantity}")
         expect(page).to have_content("Subtotal: #{number_to_currency(@oi_2.price*@oi_2.quantity)}")
+        expect(page).to have_content("Fulfilled: Yes")
       end
       expect(page).to have_content("Item Count: #{@order.total_item_count}")
       expect(page).to have_content("Total Cost: #{@order.total_cost}")
+    end
+    it 'allows me to cancel an order that is not yet complete' do
+      user = create(:user)
+      merchant = create(:merchant)
+      item = create(:item, inventory: 100)
+
+      order_1 = create(:completed_order, user: user)
+      oi_1 = create(:fulfilled_order_item, order: order_1, item: item, price: 1, quantity: 25)
+
+      order_2 = create(:order, user: user)
+      oi_2 = create(:order_item, order: order_2, item: item, price: 1, quantity: 25)
+
+      order_3 = create(:order, user: user)
+      oi_3 = create(:order_item, order: order_3, item: item, price: 1, quantity: 25)
+      oi_4 = create(:fulfilled_order_item, order: order_3, item: item, price: 1, quantity: 25)
+
+      visit profile_order_path(order_1)
+      expect(page).to have_content("Status: completed")
+      expect(page).to_not have_button('Cancel Order')
+
+      within "#oitem-#{oi_1.id}" do
+        expect(page).to have_content("Fulfilled: Yes")
+      end
+
+      visit(item_path(item))
+      expect(page).to have_content("In stock: 100")
+
+
+      visit profile_order_path(order_2)
+      within "#oitem-#{oi_2.id}" do
+        expect(page).to have_content("Fulfilled: No")
+      end
+      expect(page).to have_content("Status: pending")
+      expect(page).to have_button('Cancel Order')
+      click_button('Cancel Order')
+
+      expect(current_path).to eq(profile_order_path(order_2))
+      expect(page).to have_content("Status: cancelled")
+
+      visit(item_path(item))
+      expect(page).to have_content("In stock: 125")
+
+
+      visit profile_order_path(order_3)
+      within "#oitem-#{oi_3.id}" do
+        expect(page).to have_content("Fulfilled: No")
+      end
+      within "#oitem-#{oi_4.id}" do
+        expect(page).to have_content("Fulfilled: Yes")
+      end
+      expect(page).to have_content("Status: pending")
+      expect(page).to have_button('Cancel Order')
+      click_button('Cancel Order')
+
+      expect(current_path).to eq(profile_order_path(order_3))
+      expect(page).to have_content("Status: cancelled")
+      within "#oitem-#{oi_3.id}" do
+        expect(page).to have_content("Fulfilled: No")
+      end
+      within "#oitem-#{oi_4.id}" do
+        expect(page).to have_content("Fulfilled: No")
+      end
+
+      visit(item_path(item))
+      expect(page).to have_content("In stock: 175")
     end
   end
 
