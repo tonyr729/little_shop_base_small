@@ -34,17 +34,21 @@ Rails.application.routes.draw do
     resources :orders, only: [:index, :create, :show, :destroy]
   end
 
+  post '/admin/users/:merchant_id/items', to: 'dashboard/items#create', as: 'admin_user_items'
+  patch '/admin/users/:merchant_id/items/:id', to: 'dashboard/items#update', as: 'admin_user_item'
   namespace :admin do
     resources :users, only: [:index, :show, :edit] do
+      post '/enable', to: 'users#enable', as: 'enable'
+      post '/disable', to: 'users#disable', as: 'disable'
+      post '/upgrade', to: 'users#upgrade', as: 'upgrade'
       resources :orders, only: [:index, :show]
     end
-    resources :merchants, only: [:show]
-    post '/users/:id/enable', to: 'users#enable', as: 'user_enable'
-    post '/users/:id/disable', to: 'users#disable', as: 'user_disable'
-    post '/users/:id/upgrade', to: 'users#upgrade', as: 'user_upgrade'
-    post '/merchants/:id/enable', to: 'merchants#enable', as: 'merchant_enable'
-    post '/merchants/:id/disable', to: 'merchants#disable', as: 'merchant_disable'
-    post '/merchants/:id/upgrade', to: 'merchants#downgrade', as: 'merchant_downgrade'
+    resources :merchants, only: [:show] do
+      post '/enable', to: 'merchants#enable', as: 'enable'
+      post '/disable', to: 'merchants#disable', as: 'disable'
+      post '/upgrade', to: 'merchants#downgrade', as: 'downgrade'
+      resources :items, only: [:index, :new, :edit]
+    end
     resources :dashboard, only: [:index]
   end
 end

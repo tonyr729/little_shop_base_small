@@ -5,7 +5,14 @@
 </a>
 <p>Price: <%= number_to_currency(item.price) %></p>
 <p>Inventory: <%= item.inventory %></p>
-<p><%= link_to 'Edit Item', edit_dashboard_item_path(item) %></p>
+<p>
+<% if current_admin? %>
+<%= link_to 'Edit Item', edit_admin_merchant_item_path(@merchant, item) %>
+<% else %>
+<%= link_to 'Edit Item', edit_dashboard_item_path(item) %>
+<% end %>
+</p>
+
 <p><% if item.active %>
 <%= button_to 'Disable Item', dashboard_disable_item_path(item), method: :patch %>
 <% else %>

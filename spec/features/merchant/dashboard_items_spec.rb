@@ -3,20 +3,35 @@ require 'rails_helper'
 include ActionView::Helpers::NumberHelper
 
 RSpec.describe 'Merchant Dashboard Items page' do
-  context 'as a merchant' do
-    before :each do
-      @merchant = create(:merchant)
-      @items = create_list(:item, 3, user: @merchant)
-      @items << create(:inactive_item, user: @merchant)
-      order = create(:completed_order)
-      create(:fulfilled_order_item, order: order, item: @items[0], price: 1, quantity: 1, created_at: 2.hours.ago, updated_at: 50.minutes.ago)
+  before :each do
+    @merchant = create(:merchant)
+    @admin = create(:admin)
 
+    @items = create_list(:item, 3, user: @merchant)
+    @items << create(:inactive_item, user: @merchant)
+
+    @order = create(:completed_order)
+    @oi_1 = create(:fulfilled_order_item, order: @order, item: @items[0], price: 1, quantity: 1, created_at: 2.hours.ago, updated_at: 50.minutes.ago)
+  end
+
+  describe 'should show all items and link to add more items' do
+    scenario 'when logged in as merchant' do
       allow_any_instance_of(ApplicationController).to receive(:current_user).and_return(@merchant)
-    end
-    it 'should show all items and link to add more items' do
+      @am_admin = false
       visit dashboard_path
+    end
+    scenario 'when logged in as admin' do
+      allow_any_instance_of(ApplicationController).to receive(:current_user).and_return(@admin)
+      @am_admin = true
+      visit admin_merchant_path(@merchant)
+    end
+    after :each do
       click_link 'My Items'
-      expect(current_path).to eq(dashboard_items_path)
+      if @am_admin
+        expect(current_path).to eq(admin_merchant_items_path(@merchant))
+      else
+        expect(current_path).to eq(dashboard_items_path)
+      end
 
       expect(page).to have_link('Add new Item')
 
@@ -44,11 +59,28 @@ RSpec.describe 'Merchant Dashboard Items page' do
         end
       end
     end
-    describe 'should allow me to add a new item' do
-      it 'with their image if one is provided' do
+  end
+
+  describe 'should allow me to add a new item' do
+    describe 'with their image if one is provided' do
+      scenario 'when logged in as merchant' do
+        allow_any_instance_of(ApplicationController).to receive(:current_user).and_return(@merchant)
+        @am_admin = false
         visit dashboard_items_path
+      end
+      scenario 'when logged in as admin' do
+        allow_any_instance_of(ApplicationController).to receive(:current_user).and_return(@admin)
+        @am_admin = true
+        visit admin_merchant_items_path(@merchant)
+      end
+      after :each do
         click_link('Add new Item')
-        expect(current_path).to eq(new_dashboard_item_path)
+
+        if @am_admin
+          expect(current_path).to eq(new_admin_merchant_item_path(@merchant))
+        else
+          expect(current_path).to eq(new_dashboard_item_path)
+        end
         placeholder_image = 'https://picsum.photos/200/300/?image=524'
         image = 'https://picsum.photos/200/300/?image=5'
 
@@ -64,7 +96,11 @@ RSpec.describe 'Merchant Dashboard Items page' do
         fill_in :item_inventory, with: inventory
         click_button 'Create Item'
 
-        expect(current_path).to eq(dashboard_items_path)
+        if @am_admin
+          expect(current_path).to eq(admin_merchant_items_path(@merchant))
+        else
+          expect(current_path).to eq(dashboard_items_path)
+        end
         expect(page).to have_content("#{name} has been added!")
         item = Item.last
 
@@ -82,10 +118,25 @@ RSpec.describe 'Merchant Dashboard Items page' do
         end
         expect(page).to have_content(description)
       end
-      it 'with a default image if none is provided' do
+    end
+    describe 'with a default image if none is provided' do
+      scenario 'when logged in as merchant' do
+        allow_any_instance_of(ApplicationController).to receive(:current_user).and_return(@merchant)
+        @am_admin = false
         visit dashboard_items_path
+      end
+      scenario 'when logged in as admin do' do
+        allow_any_instance_of(ApplicationController).to receive(:current_user).and_return(@admin)
+        @am_admin = true
+        visit admin_merchant_items_path(@merchant)
+      end
+      after :each do
         click_link('Add new Item')
-        expect(current_path).to eq(new_dashboard_item_path)
+        if @am_admin
+          expect(current_path).to eq(new_admin_merchant_item_path(@merchant))
+        else
+          expect(current_path).to eq(new_dashboard_item_path)
+        end
         placeholder_image = 'https://picsum.photos/200/300/?image=524'
 
         name = 'Item Name 1'
@@ -100,7 +151,11 @@ RSpec.describe 'Merchant Dashboard Items page' do
         fill_in :item_inventory, with: inventory
         click_button 'Create Item'
 
-        expect(current_path).to eq(dashboard_items_path)
+        if @am_admin
+          expect(current_path).to eq(admin_merchant_items_path(@merchant))
+        else
+          expect(current_path).to eq(dashboard_items_path)
+        end
         expect(page).to have_content("#{name} has been added!")
         item = Item.last
 
@@ -118,9 +173,21 @@ RSpec.describe 'Merchant Dashboard Items page' do
         expect(page).to have_content(description)
       end
     end
-    describe 'should block me from adding new items' do
-      scenario 'when required fields are left empty' do
+  end
+
+  describe 'should block me from adding new items' do
+    describe 'when required fields are left empty' do
+      scenario 'when logged in as merchant' do
+        allow_any_instance_of(ApplicationController).to receive(:current_user).and_return(@merchant)
+        @am_admin = false
         visit new_dashboard_item_path
+      end
+      scenario 'when logged in as admin' do
+        allow_any_instance_of(ApplicationController).to receive(:current_user).and_return(@admin)
+        @am_admin = true
+        visit new_admin_merchant_item_path(@merchant)
+      end
+      after :each do
         click_button 'Create Item'
 
         expect(page).to have_content("prohibited this item from being saved")
@@ -132,56 +199,96 @@ RSpec.describe 'Merchant Dashboard Items page' do
         expect(page).to have_content("Inventory is not a number")
       end
     end
-    describe 'when editing an existing item' do
-      it 'should work if I enter valid details' do
-        item = create(:item, user: @merchant, name: 'Widget', description: 'Something witty goes here', price: 1.23, inventory: 456)
-
+  end
+  describe 'when editing an existing item' do
+    describe 'should work if I enter valid details' do
+      before :each do
+        @item = create(:item, user: @merchant, name: 'Widget', description: 'Something witty goes here', price: 1.23, inventory: 456)
+      end
+      scenario 'when logged in as merchant' do
+        allow_any_instance_of(ApplicationController).to receive(:current_user).and_return(@merchant)
+        @am_admin = false
         visit dashboard_items_path
-
-        within "#item-#{item.id}" do
+      end
+      scenario 'when logged in as admin' do
+        allow_any_instance_of(ApplicationController).to receive(:current_user).and_return(@admin)
+        @am_admin = true
+        visit admin_merchant_items_path(@merchant)
+      end
+      after :each do
+        within "#item-#{@item.id}" do
           click_link 'Edit Item'
         end
-        expect(current_path).to eq(edit_dashboard_item_path(item))
+        if @am_admin
+          expect(current_path).to eq(edit_admin_merchant_item_path(@merchant, @item))
+        else
+          expect(current_path).to eq(edit_dashboard_item_path(@item))
+        end
 
-        fill_in :item_name, with: 'New ' + item.name
-        fill_in :item_description, with: 'New ' + item.description
+        fill_in :item_name, with: 'New ' + @item.name
+        fill_in :item_description, with: 'New ' + @item.description
         fill_in :item_price, with: 7654.32
         fill_in :item_inventory, with: 987
         click_button 'Update Item'
 
-        expect(current_path).to eq(dashboard_items_path)
-        expect(page).to have_content("New #{item.name} has been updated!")
+        if @am_admin
+          expect(current_path).to eq(admin_merchant_items_path(@merchant))
+        else
+          expect(current_path).to eq(dashboard_items_path)
+        end
+        expect(page).to have_content("New #{@item.name} has been updated!")
 
-        within "#item-#{item.id}" do
-          expect(page).to have_content("Name: New #{item.name}")
+        within "#item-#{@item.id}" do
+          expect(page).to have_content("Name: New #{@item.name}")
           expect(page).to have_content("Price: #{number_to_currency(7654.32)}")
           expect(page).to have_content("Inventory: 987")
-          click_link "New #{item.name}"
+          click_link "New #{@item.name}"
         end
-        expect(page).to have_content('New ' + item.description)
+        expect(page).to have_content('New ' + @item.description)
       end
-      it 'should replace a blank image field with the placeholder' do
-        item = create(:item, user: @merchant, name: 'Widget', description: 'Something witty goes here', price: 1.23, inventory: 456)
+    end
+    describe 'should replace a blank image field with the placeholder' do
+      before :each do
+        @item = create(:item, user: @merchant, name: 'Widget', description: 'Something witty goes here', price: 1.23, inventory: 456)
+      end
+      scenario 'when logged in as merchant' do
+        allow_any_instance_of(ApplicationController).to receive(:current_user).and_return(@merchant)
+        @am_admin = false
+        visit edit_dashboard_item_path(@item)
+      end
+      scenario 'when logged in as admin' do
+        allow_any_instance_of(ApplicationController).to receive(:current_user).and_return(@admin)
+        @am_admin = true
+        visit edit_admin_merchant_item_path(@merchant, @item)
+      end
+      after :each do
         placeholder_image = 'https://picsum.photos/200/300/?image=524'
         image = 'https://picsum.photos/200/300/?image=5'
-
-        visit edit_dashboard_item_path(item)
 
         fill_in :item_image, with: ""
         click_button 'Update Item'
 
-        within "#item-#{item.id}" do
-          expect(page.find("#item-#{item.id}-image")['src']).to have_content(placeholder_image)
-          expect(page.find("#item-#{item.id}-image")['src']).to_not have_content(item.image)
+        within "#item-#{@item.id}" do
+          expect(page.find("#item-#{@item.id}-image")['src']).to have_content(placeholder_image)
+          expect(page.find("#item-#{@item.id}-image")['src']).to_not have_content(@item.image)
         end
       end
-      it 'should block the update if details are missing' do
-        item = create(:item, user: @merchant, name: 'Widget', description: 'Something witty goes here', price: 1.23, inventory: 456)
-        placeholder_image = 'https://picsum.photos/200/300/?image=524'
-        image = 'https://picsum.photos/200/300/?image=5'
-
-        visit edit_dashboard_item_path(item)
-
+    end
+    describe 'should block the update if details are missing' do
+      before :each do
+        @item = create(:item, user: @merchant, name: 'Widget', description: 'Something witty goes here', price: 1.23, inventory: 456)
+      end
+      scenario 'when logged in as merchant' do
+        allow_any_instance_of(ApplicationController).to receive(:current_user).and_return(@merchant)
+        @am_admin = false
+        visit edit_dashboard_item_path(@item)
+      end
+      scenario 'when logged in as admin' do
+        allow_any_instance_of(ApplicationController).to receive(:current_user).and_return(@admin)
+        @am_admin = true
+        visit edit_admin_merchant_item_path(@merchant, @item)
+      end
+      after :each do
         fill_in :item_name, with: ""
         fill_in :item_description, with: ""
         fill_in :item_price, with: ""
@@ -197,36 +304,93 @@ RSpec.describe 'Merchant Dashboard Items page' do
         expect(page).to have_content("Inventory is not a number")
       end
     end
-    it 'allows me to disable then re-enable an active item' do
+  end
+  describe 'allows me to disable then re-enable an active item' do
+    before :each do
+      @item = create(:item, user: @merchant, name: 'Widget', description: 'Something witty goes here', price: 1.23, inventory: 456)
+    end
+    scenario 'when logged in as merchant' do
+      allow_any_instance_of(ApplicationController).to receive(:current_user).and_return(@merchant)
+      @am_admin = false
       visit dashboard_items_path
-      within "#item-#{@items[0].id}" do
+    end
+    scenario 'when logged in as admin' do
+      allow_any_instance_of(ApplicationController).to receive(:current_user).and_return(@admin)
+      @am_admin = true
+      visit admin_merchant_items_path(@merchant)
+    end
+    after :each do
+      within "#item-#{@item.id}" do
         click_button 'Disable Item'
       end
-      expect(current_path).to eq(dashboard_items_path)
-      within "#item-#{@items[0].id}" do
+
+      if @am_admin
+        expect(current_path).to eq(admin_merchant_items_path(@merchant))
+      else
+        expect(current_path).to eq(dashboard_items_path)
+      end
+
+      within "#item-#{@item.id}" do
         expect(page).to_not have_button('Disable Item')
         click_button 'Enable Item'
       end
-      expect(current_path).to eq(dashboard_items_path)
+
+      if @am_admin
+        expect(current_path).to eq(admin_merchant_items_path(@merchant))
+      else
+        expect(current_path).to eq(dashboard_items_path)
+      end
+
       within "#item-#{@items[0].id}" do
         expect(page).to_not have_button('Enable Item')
       end
     end
-    describe 'when trying to delete an item' do
-      it 'works when nobody has purchased that item before' do
+  end
+  describe 'when trying to delete an item' do
+    describe 'works when nobody has purchased that item before' do
+      scenario 'when logged in as merchant' do
+        allow_any_instance_of(ApplicationController).to receive(:current_user).and_return(@merchant)
+        @am_admin = false
         visit dashboard_items_path
+      end
+      scenario 'when logged in as admin' do
+        allow_any_instance_of(ApplicationController).to receive(:current_user).and_return(@admin)
+        @am_admin = true
+        visit admin_merchant_items_path(@merchant)
+      end
+      after :each do
         within "#item-#{@items[1].id}" do
           click_button 'Delete Item'
         end
-        expect(current_path).to eq(dashboard_items_path)
+
+        if @am_admin
+          expect(current_path).to eq(admin_merchant_items_path(@merchant))
+        else
+          expect(current_path).to eq(dashboard_items_path)
+        end
         expect(page).to_not have_css("#item-#{@items[1].id}")
         expect(page).to_not have_content(@items[1].name)
       end
-      it 'fails if someone has purchased that item before' do
+    end
+    describe 'fails if someone has purchased that item before' do
+      scenario 'when logged in as merchant' do
+        allow_any_instance_of(ApplicationController).to receive(:current_user).and_return(@merchant)
+        @am_admin = false
         visit dashboard_items_path
+      end
+      scenario 'when logged in as admin' do
+        allow_any_instance_of(ApplicationController).to receive(:current_user).and_return(@admin)
+        @am_admin = true
+        visit admin_merchant_items_path(@merchant)
+      end
+      after :each do
         page.driver.delete(dashboard_item_path(@items[0]))
         expect(page.status_code).to eq(302)
-        visit dashboard_items_path
+        if @am_admin
+          visit admin_merchant_items_path(@merchant)
+        else
+          visit dashboard_items_path
+        end
         expect(page).to have_css("#item-#{@items[0].id}")
         expect(page).to have_content("Attempt to delete #{@items[0].name} was thwarted!")
       end

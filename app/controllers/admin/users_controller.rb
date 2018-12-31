@@ -27,14 +27,14 @@ class Admin::UsersController < Admin::BaseController
   end
 
   def upgrade
-    set_user_role(User.find(params[:id]), :merchant)
+    set_user_role(User.find(params[:user_id]), :merchant)
     redirect_to admin_users_path
   end
 
   private
 
   def set_user_active(state)
-    user = User.find(params[:id])
+    user = User.find(params[:user_id])
     user.active = state
     user.save
     redirect_to admin_users_path

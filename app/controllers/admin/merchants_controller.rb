@@ -27,14 +27,14 @@ class Admin::MerchantsController < Admin::BaseController
   end
 
   def downgrade
-    set_user_role(User.find(params[:id]), :default)
+    set_user_role(User.find(params[:merchant_id]), :default)
     redirect_to merchants_path
   end
 
   private
 
   def set_user_active(state)
-    user = User.find(params[:id])
+    user = User.find(params[:merchant_id])
     user.active = state
     user.save
     redirect_to merchants_path
