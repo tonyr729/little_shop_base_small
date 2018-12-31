@@ -10,6 +10,32 @@ class User < ApplicationRecord
 
   enum role: [:default, :merchant, :admin]
 
+  def self.top_3_revenue_merchants
+    User.joins(items: :order_items)
+      .select('users.*, sum(order_items.quantity * order_items.price) as revenue')
+      .where('order_items.fulfilled=?', true)
+      .order('revenue desc')
+      .group(:id)
+      .limit(3)
+  end
+
+  def self.merchant_fulfillment_times(order, count)
+    User.joins(items: :order_items)
+      .select('users.*, avg(order_items.updated_at - order_items.created_at) as avg_fulfillment_time')
+      .where('order_items.fulfilled=?', true)
+      .order("avg_fulfillment_time #{order}")
+      .group(:id)
+      .limit(count)
+  end
+
+  def self.top_3_fulfilling_merchants
+    merchant_fulfillment_times(:asc, 3)
+  end
+
+  def self.bottom_3_fulfilling_merchants
+    merchant_fulfillment_times(:desc, 3)
+  end
+
   def my_pending_orders
     Order.joins(order_items: :item)
       .where("items.merchant_id=? AND orders.status=? AND order_items.fulfilled=?", self.id, 0, false)

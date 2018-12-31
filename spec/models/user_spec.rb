@@ -18,6 +18,65 @@ RSpec.describe User, type: :model do
   end
 
   describe 'class methods' do
+    describe 'merchant stats' do
+      before :each do
+        @user_1 = create(:user, city: 'Denver', state: 'CO')
+        @user_2 = create(:user, city: 'NYC', state: 'NY')
+        @user_3 = create(:user, city: 'Seattle', state: 'WA')
+        @user_4 = create(:user, city: 'Seattle', state: 'FL')
+
+        @merchant_1, @merchant_2, @merchant_3 = create_list(:merchant, 3)
+        @item_1 = create(:item, user: @merchant_1)
+        @item_2 = create(:item, user: @merchant_2)
+        @item_3 = create(:item, user: @merchant_3)
+
+        @order_1 = create(:completed_order, user: @user_1)
+        @oi_1 = create(:fulfilled_order_item, item: @item_1, order: @order_1, quantity: 100, price: 100, created_at: 10.minutes.ago, updated_at: 9.minute.ago)
+
+        @order_2 = create(:completed_order, user: @user_2)
+        @oi_2 = create(:fulfilled_order_item, item: @item_2, order: @order_2, quantity: 300, price: 300, created_at: 2.days.ago, updated_at: 1.minute.ago)
+
+        @order_3 = create(:completed_order, user: @user_3)
+        @oi_3 = create(:fulfilled_order_item, item: @item_3, order: @order_3, quantity: 200, price: 200, created_at: 10.minutes.ago, updated_at: 5.minute.ago)
+
+        @order_4 = create(:completed_order, user: @user_4)
+        @oi_4 = create(:fulfilled_order_item, item: @item_3, order: @order_4, quantity: 201, price: 200, created_at: 10.minutes.ago, updated_at: 5.minute.ago)
+      end
+      it '.top_3_revenue_merchants' do
+        expect(User.top_3_revenue_merchants[0]).to eq(@merchant_2)
+        expect(User.top_3_revenue_merchants[0].revenue.to_f).to eq(90000.00)
+        expect(User.top_3_revenue_merchants[1]).to eq(@merchant_3)
+        expect(User.top_3_revenue_merchants[1].revenue.to_f).to eq(80200.00)
+        expect(User.top_3_revenue_merchants[2]).to eq(@merchant_1)
+        expect(User.top_3_revenue_merchants[2].revenue.to_f).to eq(10000.00)
+      end
+      it '.merchant_fulfillment_times' do
+        expect(User.merchant_fulfillment_times(:asc, 1)).to eq([@merchant_1])
+        expect(User.merchant_fulfillment_times(:desc, 2)).to eq([@merchant_2, @merchant_3])
+      end
+      it '.top_3_fulfilling_merchants' do
+        expect(User.top_3_fulfilling_merchants[0]).to eq(@merchant_1)
+        aft = User.top_3_fulfilling_merchants[0].avg_fulfillment_time
+        expect(aft[0..7]).to eq('00:01:00')
+        expect(User.top_3_fulfilling_merchants[1]).to eq(@merchant_3)
+        aft = User.top_3_fulfilling_merchants[1].avg_fulfillment_time
+        expect(aft[0..7]).to eq('00:05:00')
+        expect(User.top_3_fulfilling_merchants[2]).to eq(@merchant_2)
+        aft = User.top_3_fulfilling_merchants[2].avg_fulfillment_time
+        expect(aft[0..13]).to eq('1 day 23:59:00')
+      end
+      it '.bottom_3_fulfilling_merchants' do
+        expect(User.bottom_3_fulfilling_merchants[0]).to eq(@merchant_2)
+        aft = User.bottom_3_fulfilling_merchants[0].avg_fulfillment_time
+        expect(aft[0..13]).to eq('1 day 23:59:00')
+        expect(User.bottom_3_fulfilling_merchants[1]).to eq(@merchant_3)
+        aft = User.bottom_3_fulfilling_merchants[1].avg_fulfillment_time
+        expect(aft[0..7]).to eq('00:05:00')
+        expect(User.bottom_3_fulfilling_merchants[2]).to eq(@merchant_1)
+        aft = User.bottom_3_fulfilling_merchants[2].avg_fulfillment_time
+        expect(aft[0..7]).to eq('00:01:00')
+      end
+    end
   end
 
   describe 'instance methods' do

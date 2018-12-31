@@ -7,6 +7,33 @@ class Order < ApplicationRecord
 
   enum status: [:pending, :completed, :cancelled]
 
+  def self.top_3_states
+    Order.joins(:user, :order_items)
+      .select('users.state, count(order_items.id) as order_count')
+      .where("order_items.fulfilled = ?", true)
+      .group('users.state')
+      .order('order_count desc, users.state asc')
+      .limit(3)
+  end
+
+  def self.top_3_cities
+    Order.joins(:user, :order_items)
+      .select('users.city, users.state, count(order_items.id) as order_count')
+      .where("order_items.fulfilled = ?", true)
+      .group('users.state, users.city')
+      .order('order_count desc, users.city asc, users.state asc')
+      .limit(3)
+  end
+
+  def self.top_3_quantity_orders
+    Order.joins(:user, :order_items)
+      .select('users.name as user_name, sum(order_items.quantity) as total_quantity')
+      .where('order_items.fulfilled=?', true)
+      .order('total_quantity desc, user_name asc')
+      .group(:id, 'users.id')
+      .limit(3)
+  end
+
   def last_update
     order_items.maximum(:updated_at)
   end

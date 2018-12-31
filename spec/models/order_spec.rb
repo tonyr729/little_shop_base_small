@@ -12,6 +12,63 @@ RSpec.describe Order, type: :model do
   end
 
   describe 'class methods' do
+    describe 'merchant stats' do
+      before :each do
+        @user_1 = create(:user, city: 'Denver', state: 'CO')
+        @user_2 = create(:user, city: 'NYC', state: 'NY')
+        @user_3 = create(:user, city: 'Seattle', state: 'WA')
+        @user_4 = create(:user, city: 'Seattle', state: 'CO')
+
+        @merchant_1 = create(:merchant, name: 'Merchant Name 1')
+        @merchant_2 = create(:merchant, name: 'Merchant Name 2')
+        @merchant_3 = create(:merchant, name: 'Merchant Name 3')
+
+        @item_1 = create(:item, user: @merchant_1)
+        @item_2 = create(:item, user: @merchant_2)
+        @item_3 = create(:item, user: @merchant_3)
+
+        @order_1 = create(:completed_order, user: @user_1)
+        @oi_1 = create(:fulfilled_order_item, item: @item_1, order: @order_1, quantity: 100, price: 100, created_at: 10.minutes.ago, updated_at: 9.minute.ago)
+
+        @order_2 = create(:completed_order, user: @user_2)
+        @oi_2 = create(:fulfilled_order_item, item: @item_2, order: @order_2, quantity: 300, price: 300, created_at: 2.days.ago, updated_at: 1.minute.ago)
+
+        @order_3 = create(:completed_order, user: @user_3)
+        @oi_3 = create(:fulfilled_order_item, item: @item_3, order: @order_3, quantity: 200, price: 200, created_at: 10.minutes.ago, updated_at: 5.minute.ago)
+
+        @order_4 = create(:completed_order, user: @user_4)
+        @oi_4 = create(:fulfilled_order_item, item: @item_3, order: @order_4, quantity: 201, price: 200, created_at: 10.minutes.ago, updated_at: 5.minute.ago)
+      end
+      it '.top_3_states' do
+        expect(Order.top_3_states[0].state).to eq('CO')
+        expect(Order.top_3_states[0].order_count).to eq(2)
+        expect(Order.top_3_states[1].state).to eq('NY')
+        expect(Order.top_3_states[1].order_count).to eq(1)
+        expect(Order.top_3_states[2].state).to eq('WA')
+        expect(Order.top_3_states[2].order_count).to eq(1)
+      end
+      it '.top_3_cities' do
+        expect(Order.top_3_cities[0].city).to eq('Denver')
+        expect(Order.top_3_cities[0].state).to eq('CO')
+        expect(Order.top_3_cities[0].order_count).to eq(1)
+
+        expect(Order.top_3_cities[1].city).to eq('NYC')
+        expect(Order.top_3_cities[1].state).to eq('NY')
+        expect(Order.top_3_cities[1].order_count).to eq(1)
+
+        expect(Order.top_3_cities[2].city).to eq('Seattle')
+        expect(Order.top_3_cities[2].state).to eq('CO')
+        expect(Order.top_3_cities[2].order_count).to eq(1)
+      end
+      it '.top_3_quantity_orders' do
+        expect(Order.top_3_quantity_orders[0].user_name).to eq(@user_2.name)
+        expect(Order.top_3_quantity_orders[0].total_quantity).to eq(300)
+        expect(Order.top_3_quantity_orders[1].user_name).to eq(@user_4.name)
+        expect(Order.top_3_quantity_orders[1].total_quantity).to eq(201)
+        expect(Order.top_3_quantity_orders[2].user_name).to eq(@user_3.name)
+        expect(Order.top_3_quantity_orders[2].total_quantity).to eq(200)
+      end
+    end
   end
 
   describe 'instance methods' do

@@ -7,6 +7,13 @@ class MerchantsController < ApplicationController
       flags[:active] = true
     end
     @merchants = User.where(flags)
+
+    @top_3_revenue_merchants = User.top_3_revenue_merchants
+    @top_3_fulfilling_merchants = User.top_3_fulfilling_merchants
+    @bottom_3_fulfilling_merchants = User.bottom_3_fulfilling_merchants
+    @top_3_states = Order.top_3_states
+    @top_3_cities = Order.top_3_cities
+    @top_3_quantity_orders = Order.top_3_quantity_orders
   end
 
   def show
