@@ -35,7 +35,9 @@ Rails.application.routes.draw do
   end
 
   namespace :admin do
-    resources :users, only: [:index, :show, :edit]
+    resources :users, only: [:index, :show, :edit] do
+      resources :orders, only: [:index, :show]
+    end
     resources :merchants, only: [:show]
     post '/users/:id/enable', to: 'users#enable', as: 'user_enable'
     post '/users/:id/disable', to: 'users#disable', as: 'user_disable'

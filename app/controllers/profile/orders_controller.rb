@@ -29,16 +29,23 @@ class Profile::OrdersController < ApplicationController
     order = Order.find(params[:id])
     if order.status == 'pending'
       order.order_items.each do |oi|
-        item = Item.find(oi.item_id)
-        item.inventory += oi.quantity
-        item.save
-        oi.fulfilled = false
-        oi.save
+        if oi.fulfilled
+          item = Item.find(oi.item_id)
+          item.inventory += oi.quantity
+          item.save
+          oi.fulfilled = false
+          oi.save
+        end
       end
       order.status = :cancelled
       order.save
     end
-    redirect_to profile_order_path(order)
+    if current_admin?
+      user = order.user
+      redirect_to admin_user_order_path(user, order)
+    else
+      redirect_to profile_order_path(order)
+    end
   end
 
   private
