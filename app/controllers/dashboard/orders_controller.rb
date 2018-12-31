@@ -14,6 +14,10 @@ class Dashboard::OrdersController < Dashboard::BaseController
       item.inventory -= oi.quantity
       item.save
     end
+    if order.order_items.where(fulfilled: false).empty?
+      order.status = :completed
+      order.save
+    end
     redirect_to dashboard_order_path(order)
   end
 end

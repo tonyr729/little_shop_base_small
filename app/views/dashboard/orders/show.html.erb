@@ -8,6 +8,8 @@
 <% end %>
 
 <%= tag.div id: 'order-details' do %>
+  <p>Status: <%= @order.status %></p>
+
   <% @items.each do |item| %>
     <%= tag.div id: "item-#{item.id}" do %>
       <p><%= link_to item.name, item_path(item) %></p>
