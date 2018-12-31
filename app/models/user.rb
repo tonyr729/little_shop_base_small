@@ -19,4 +19,71 @@ class User < ApplicationRecord
     return nil unless self.merchant?
     Item.where(id: item_id, merchant_id: self.id).pluck(:inventory).first
   end
+
+  def top_items_by_quantity(count)
+    self.items
+      .joins(:order_items)
+      .select('items.*, sum(order_items.quantity) as quantity_sold')
+      .where("order_items.fulfilled = ?", true)
+      .group(:id)
+      .order('quantity_sold desc')
+      .limit(count)
+  end
+
+  def quantity_sold_percentage
+    sold = self.items.joins(:order_items).where('order_items.fulfilled=?', true).sum('order_items.quantity')
+    total = self.items.sum(:inventory) + sold
+    {
+      sold: sold,
+      total: total,
+      percentage: ((sold.to_f/total)*100).round(2)
+    }
+  end
+
+  def top_3_states
+    Item.joins('inner join order_items oi on oi.item_id=items.id inner join orders o on o.id=oi.order_id inner join users u on o.user_id=u.id')
+      .select('u.state, sum(oi.quantity) as quantity_shipped')
+      .where("oi.fulfilled = ? AND items.merchant_id=?", true, self.id)
+      .group(:state)
+      .order('quantity_shipped desc')
+      .limit(3)
+  end
+
+  def top_3_cities
+    Item.joins('inner join order_items oi on oi.item_id=items.id inner join orders o on o.id=oi.order_id inner join users u on o.user_id=u.id')
+      .select('u.city, u.state, sum(oi.quantity) as quantity_shipped')
+      .where("oi.fulfilled = ? AND items.merchant_id=?", true, self.id)
+      .group(:state, :city)
+      .order('quantity_shipped desc')
+      .limit(3)
+  end
+
+  def most_ordering_user
+    User.joins('inner join orders o on o.user_id=users.id inner join order_items oi on oi.order_id=o.id inner join items i on i.id=oi.item_id')
+      .select('users.*, count(o.id) as order_count')
+      .where("oi.fulfilled = ? AND i.merchant_id=?", true, self.id)
+      .group(:id)
+      .order('order_count desc')
+      .limit(1)
+      .first
+  end
+
+  def most_items_user
+    User.joins('inner join orders o on o.user_id=users.id inner join order_items oi on oi.order_id=o.id inner join items i on i.id=oi.item_id')
+      .select('users.*, sum(oi.quantity) as item_count')
+      .where("oi.fulfilled = ? AND i.merchant_id=?", true, self.id)
+      .group(:id)
+      .order('item_count desc')
+      .limit(1)
+      .first
+  end
+
+  def top_3_revenue_users
+    User.joins('inner join orders o on o.user_id=users.id inner join order_items oi on oi.order_id=o.id inner join items i on i.id=oi.item_id')
+      .select('users.*, sum(oi.quantity*oi.price) as revenue')
+      .where("oi.fulfilled = ? AND i.merchant_id=?", true, self.id)
+      .group(:id)
+      .order('revenue desc')
+      .limit(3)
+  end
 end

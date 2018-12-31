@@ -27,3 +27,72 @@
     </ul>
   <% end %>
 <% end %>
+
+<%= tag.div id: 'statistics' do %>
+  <%= tag.div id: 'top-5-items' do %>
+    <h4>Top 5 items sold by quantity</h4>
+    <ol>
+    <% @top_5_items.each do |item| %>
+    <%= tag.li class: 'item' do %>
+    <%= item.name %>, quantity sold: <%= item.quantity_sold %>
+    <% end %>
+    <% end %>
+    </ol>
+  <% end %>
+
+  <%= tag.div id: 'quantity-sold' do %>
+    <h4>Items Shipped as Percentage of Inventory</h4>
+    <p>You have sold <%= @qsp[:sold] %> items out of <%= @qsp[:total] %> (<%= @qsp[:percentage] %>%)</p>
+  <% end %>
+
+  <%= tag.div id: 'top-3-states' do %>
+    <h4>Top 3 States where Items were Shipped</h4>
+    <ol>
+    <% @top_3_states.each do |order| %>
+    <%= tag.li class: 'state' do %>
+    <%= order.state %>, quantity shipped: <%= order.quantity_shipped %>
+    <% end %>
+    <% end %>
+    </ol>
+  <% end %>
+
+  <%= tag.div id: 'top-3-cities' do %>
+    <h4>Top 3 Cities where Items were Shipped</h4>
+    <ol>
+    <% @top_3_cities.each do |order| %>
+    <%= tag.li class: 'city' do %>
+    <%= order.city %>, <%= order.state %>, quantity shipped: <%= order.quantity_shipped %>
+    <% end %>
+    <% end %>
+    </ol>
+  <% end %>
+
+  <%= tag.div id: 'most-ordering-user' do %>
+    <h4>User with most orders</h4>
+    <% if @most_ordering_user.nil? %>
+    <p>You don't have any orders yet</p>
+    <% else %>
+    <p><%= @most_ordering_user.name %>, with <%= @most_ordering_user.order_count %> orders</p>
+    <% end %>
+  <% end %>
+
+  <%= tag.div id: 'most-items-user' do %>
+    <h4>User with most items bought</h4>
+    <% if @most_items_user.nil? %>
+    <p>You don't have any orders yet</p>
+    <% else %>
+    <p><%= @most_items_user.name %>, with <%= @most_items_user.item_count %> items</p>
+    <% end %>
+  <% end %>
+
+  <%= tag.div id: 'top-3-revenue-users' do %>
+    <h4>Top 3 Users by Revenue</h4>
+    <ol>
+    <% @top_3_revenue_users.each do |user| %>
+    <%= tag.li class: 'user' do %>
+    <%= user.name %>, revenue: <%= number_to_currency(user.revenue) %>
+    <% end %>
+    <% end %>
+    </ol>
+  <% end %>
+<% end %>
