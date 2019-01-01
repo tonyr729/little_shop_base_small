@@ -7,10 +7,17 @@ RSpec.describe 'Item show page', type: :feature do
     @admin = create(:admin)
     @merchant = create(:merchant)
     @item = create(:item, user: @merchant)
+    @item_2 = create(:item, user: @merchant, inventory: 0)
     @user = create(:user)
     @order = create(:completed_order, user: @user)
     create(:fulfilled_order_item, order: @order, item: @item, created_at: 4.days.ago, updated_at: 3.days.ago)
     create(:fulfilled_order_item, order: @order, item: @item, created_at: 1.hour.ago, updated_at: 30.minutes.ago)
+  end
+  it 'should hide Add To Cart button if inventory is 0' do
+    visit item_path(@item_2)
+    expect(page).to have_content('Merchant is out of stock, sorry')
+    expect(page).to_not have_button('Add to Cart')
+    visit item_path(@item)
   end
   describe 'should show details about a single item' do
     scenario 'as a visitor' do
