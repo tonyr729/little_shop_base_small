@@ -3,7 +3,9 @@
 <%= tag.div id: "item-#{@item.id}" do %>
 <%= render partial: "card", locals: {item: @item, img_width: 400} %>
 
+<% if current_user.nil? || current_user.default? %>
 <%= button_to 'Add to Cart', cart_add_item_path(@item) %>
+<% end %>
 
 <p>Average time to fulfill: <%= fulfillment_time(@item.avg_fulfillment_time) %>
 <% end %>
