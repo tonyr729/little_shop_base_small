@@ -94,5 +94,25 @@ RSpec.describe 'Login/Logout workflow', type: :feature do
       expect(current_path).to eq(root_path)
       expect(page).to have_content('You are logged out')
     end
+    it 'empties my shopping cart when logging out' do
+      create(:user, email:'a@b.com', password: 'password')
+      item_1 = create(:item)
+
+      visit login_path
+
+      fill_in :email, with: 'a@b.com'
+      fill_in :password, with: 'password'
+      click_button 'Log in'
+
+      visit item_path(item_1)
+      click_button 'Add to Cart'
+      expect(page).to have_content('Cart: 1')
+
+      visit logout_path
+
+      expect(current_path).to eq(root_path)
+      expect(page).to have_content('You are logged out')
+      expect(page).to have_content('Cart: 0')
+    end
   end
 end
