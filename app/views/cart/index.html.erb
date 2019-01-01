@@ -1,11 +1,6 @@
 <% if @cart.contents.empty? %>
   <p>Your cart is empty</p>
 <% else %>
-  <% @items.each do |item| %>
-    <%= tag.div id: "item-#{item.id}" do %>
-      <%= render partial: "cart_item", locals: {item: item, img_width: 150} %>
-    <% end %>
-  <% end %>
   Total: <%= number_to_currency(@cart.grand_total) %>
 
   <%= button_to "Empty cart", cart_empty_path, method: :delete %>
@@ -18,5 +13,11 @@
     or
     <%= link_to 'log in', login_path %>
     to check out.
+  <% end %>
+
+  <% @items.each do |item| %>
+    <%= tag.div id: "item-#{item.id}" do %>
+      <%= render partial: "cart_item", locals: {item: item, img_width: 150} %>
+    <% end %>
   <% end %>
 <% end %>

@@ -3,6 +3,9 @@
   <p>Created: <%= @order.created_at %></p>
   <p>Last Update: <%= @order.last_update %></p>
   <p>Status: <%= @order.status %></p>
+  <p>Item Count: <%= @order.total_item_count %></p>
+  <p>Total Cost: <%= number_to_currency(@order.total_cost) %></p>
+
   <% if @order.status == 'pending' %>
   <p><%= button_to 'Cancel Order', profile_order_path(@order), method: :delete %></p>
   <% end %>
@@ -13,6 +16,4 @@
     <% end %>
   <% end %>
 
-  <p>Item Count: <%= @order.total_item_count %></p>
-  <p>Total Cost: <%= @order.total_cost %></p>
 <% end %>

@@ -100,7 +100,7 @@ RSpec.describe 'Profile Orders page', type: :feature do
           expect(page).to have_content("Fulfilled: Yes")
         end
         expect(page).to have_content("Item Count: #{@order.total_item_count}")
-        expect(page).to have_content("Total Cost: #{@order.total_cost}")
+        expect(page).to have_content("Total Cost: #{number_to_currency(@order.total_cost)}")
       end
     end
     describe 'allows me to cancel an order that is not yet complete' do

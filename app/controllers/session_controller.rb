@@ -9,9 +9,14 @@ class SessionController < ApplicationController
   def create
     user = User.find_by(email: params[:email])
     if user && user.authenticate(params[:password])
-      session[:user_id] = user.id
-      flash[:success] = 'You are logged in'
-      redirect_user(user)
+      if user.active == false
+        flash[:error] = 'Sorry, your account is disabled'
+        redirect_to root_path
+      else
+        session[:user_id] = user.id
+        flash[:success] = 'You are logged in'
+        redirect_user(user)
+      end
     else
       flash[:error] = 'Email or password is incorrect'
       render :new
