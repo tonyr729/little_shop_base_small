@@ -16,7 +16,7 @@ Rails.application.routes.draw do
   get '/logout', to: 'session#destroy'
 
   get '/register', to: 'users#new', as: 'registration'
-  resources :users, only: [:create, :update]
+  resources :users, only: [:create, :update], param: :slug
 
   get '/dashboard', to: 'merchants#show', as: 'dashboard'
   namespace :dashboard do
