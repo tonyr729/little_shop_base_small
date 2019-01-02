@@ -104,6 +104,11 @@ RSpec.describe User, type: :model do
       expect(merchant.inventory_check(item.id)).to eq(item.inventory)
     end
 
+    it '.generate_slug' do
+      user = create(:user, email: 'ian@turing.io')
+      expect(user.slug).to eq('ian-turing-io')
+    end
+
     describe 'merchant stats methods' do
       before :each do
         @user_1 = create(:user, city: 'Springfield', state: 'MO')
