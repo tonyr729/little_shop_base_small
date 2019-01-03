@@ -71,7 +71,19 @@ RSpec.describe Item, type: :model do
 
     it '.generate_slug' do
       item = create(:item, name: 'My! Awesome Item!')
-      expect(item.slug).to eq("#{item.merchant_id}-my-awesome-item")
+      expect(item.slug).to eq("my-awesome-item")
+    end
+
+    it '.slug_check' do
+      item = create(:item, name: 'My! Awesome Item!')
+      item_2 = create(:item, name: 'My! Awesome Item!')
+      item_x = create(:item, name: 'My! Awesome Item!')
+      item_y = create(:item, name: 'My! Awesome Item!')
+      
+      expect(item.slug).to eq('my-awesome-item')
+      expect(item_2.slug).to eq('my-awesome-item-2')
+      expect(item_x.slug).to eq('my-awesome-item-3')
+      expect(item_y.slug).to eq('my-awesome-item-4')
     end
   end
 end
