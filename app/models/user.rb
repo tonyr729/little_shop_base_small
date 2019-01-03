@@ -8,6 +8,7 @@ class User < ApplicationRecord
 
   validates_presence_of :name, :address, :city, :state, :zip
   validates :email, presence: true, uniqueness: true
+  validates :slug, presence: true, uniqueness: true
 
   enum role: [:default, :merchant, :admin]
 
