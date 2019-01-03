@@ -56,7 +56,7 @@ class Dashboard::ItemsController < Dashboard::BaseController
       redirect_to dashboard_items_path
     end
   end
-
+  
   def update
     @merchant = current_user
     if current_admin?
