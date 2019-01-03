@@ -65,7 +65,7 @@ ActiveRecord::Schema.define(version: 20190103033507) do
     t.string "slug", default: "t"
     t.index ["city"], name: "index_users_on_city"
     t.index ["email"], name: "index_users_on_email"
-    t.index ["slug"], name: "index_users_on_slug", unique: true
+    t.index ["slug"], name: "index_users_on_slug"
     t.index ["state"], name: "index_users_on_state"
   end
 
