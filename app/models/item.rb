@@ -50,7 +50,15 @@ class Item < ApplicationRecord
 
   private
 
+    def slug_check(slug)
+      if Item.where(slug: slug).exists?
+        slug = "#{slug}-#{(Item.where("slug LIKE ?", "%#{slug}%").count + 1)}"
+      end
+      slug
+    end
+
     def generate_slug
-      self.slug = "#{merchant_id}-#{ name.downcase.parameterize }" if name
+      slug = "#{ name.downcase.parameterize }" if name
+      self.slug = slug_check(slug) if name
     end
 end
