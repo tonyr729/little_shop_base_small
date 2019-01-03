@@ -9,8 +9,10 @@ RSpec.describe Item, type: :model do
     it { should validate_presence_of :inventory }
     it { should validate_numericality_of(:inventory).only_integer }
     it { should validate_numericality_of(:inventory).is_greater_than_or_equal_to(0) }
+    it { should validate_presence_of :slug }
+    it { should validate_uniqueness_of :slug }
   end
-
+  
   describe 'relationships' do
     it { should belong_to :user }
     it { should have_many :order_items }
@@ -65,6 +67,11 @@ RSpec.describe Item, type: :model do
 
       expect(item_1.ever_ordered?).to eq(true)
       expect(item_2.ever_ordered?).to eq(false)
+    end
+
+    it '.generate_slug' do
+      item = create(:item, name: 'My! Awesome Item!')
+      expect(item.slug).to eq("#{item.merchant_id}-my-awesome-item")
     end
   end
 end
