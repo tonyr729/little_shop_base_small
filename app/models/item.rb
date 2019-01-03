@@ -1,9 +1,11 @@
 class Item < ApplicationRecord
+  before_save :generate_slug
   belongs_to :user, foreign_key: 'merchant_id'
   has_many :order_items
   has_many :orders, through: :order_items
 
   validates_presence_of :name, :description
+  validates :slug, presence: true, uniqueness: true
   validates :price, presence: true, numericality: {
     only_integer: false,
     greater_than_or_equal_to: 0
@@ -41,4 +43,14 @@ class Item < ApplicationRecord
   def ever_ordered?
     OrderItem.find_by_item_id(self.id) !=  nil
   end
+
+  def to_param
+    slug
+  end
+
+  private
+
+    def generate_slug
+      self.slug = "#{merchant_id}-#{ name.downcase.parameterize }" if name
+    end
 end
