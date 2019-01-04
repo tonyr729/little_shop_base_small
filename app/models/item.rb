@@ -1,5 +1,4 @@
 class Item < ApplicationRecord
-  before_save :generate_slug
   belongs_to :user, foreign_key: 'merchant_id'
   has_many :order_items
   has_many :orders, through: :order_items
@@ -48,17 +47,15 @@ class Item < ApplicationRecord
     slug
   end
 
-  private
-
-    def slug_check(slug)
-      if Item.where(slug: slug).exists?
-        slug = "#{slug}-#{(Item.where("slug LIKE ?", "%#{slug}%").count + 1)}"
-      end
-      slug
+  def slug_check(slug)
+    if Item.where(slug: slug).exists?
+      slug = "#{slug}-#{(Item.where("slug LIKE ?", "%#{slug}%").count + 1)}"
     end
+    slug
+  end
 
-    def generate_slug
-      slug = "#{ name.downcase.parameterize }" if name
-      self.slug = slug_check(slug) if name
-    end
+  def generate_slug
+    slug = "#{ name.downcase.parameterize }" if name
+    self.slug = slug_check(slug) if name
+  end
 end
