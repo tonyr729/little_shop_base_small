@@ -4,6 +4,7 @@ class Item < ApplicationRecord
   has_many :orders, through: :order_items
 
   validates_presence_of :name, :description
+  validates :slug, presence: true, uniqueness: true
   validates :price, presence: true, numericality: {
     only_integer: false,
     greater_than_or_equal_to: 0
@@ -40,5 +41,21 @@ class Item < ApplicationRecord
 
   def ever_ordered?
     OrderItem.find_by_item_id(self.id) !=  nil
+  end
+
+  def to_param
+    slug
+  end
+
+  def slug_check(slug)
+    if Item.where(slug: slug).exists?
+      slug = "#{slug}-#{(Item.where("slug LIKE ?", "%#{slug}%").count + 1)}"
+    end
+    slug
+  end
+
+  def generate_slug
+    slug = "#{ name.downcase.parameterize }" if name
+    self.slug = slug_check(slug) if name
   end
 end

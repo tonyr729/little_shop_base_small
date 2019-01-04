@@ -9,8 +9,10 @@ RSpec.describe Item, type: :model do
     it { should validate_presence_of :inventory }
     it { should validate_numericality_of(:inventory).only_integer }
     it { should validate_numericality_of(:inventory).is_greater_than_or_equal_to(0) }
+    it { should validate_presence_of :slug }
+    it { should validate_uniqueness_of :slug }
   end
-
+  
   describe 'relationships' do
     it { should belong_to :user }
     it { should have_many :order_items }
@@ -65,6 +67,40 @@ RSpec.describe Item, type: :model do
 
       expect(item_1.ever_ordered?).to eq(true)
       expect(item_2.ever_ordered?).to eq(false)
+    end
+
+    it '.generate_slug' do
+      user = create(:user)
+      item = Item.create!(
+        name: 'Unique! slUG@$', 
+        description: "Discription", 
+        image: "img.jpg",
+        inventory: 40, 
+        price: 10,
+        user: user
+      )
+
+      result = item.generate_slug
+      expect(result).to eq("unique-slug")
+    end
+
+    it '.slug_check' do
+      user = create(:user)
+      item = Item.create!(
+        name: 'Non-unique slug', 
+        description: "Discription", 
+        image: "img.jpg",
+        inventory: 40, 
+        price: 10,
+        user: user,
+        slug: 'non-unique-slug'
+      )
+
+      result = item.slug_check('unique-slug')
+      expect(result).to eq('unique-slug')
+
+      result_2 = item.slug_check('non-unique-slug')
+      expect(result_2).to eq('non-unique-slug-2')
     end
   end
 end
