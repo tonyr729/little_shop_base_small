@@ -25,6 +25,7 @@ class Dashboard::ItemsController < Dashboard::BaseController
       @merchant = User.find_by(slug: params[:merchant_id])
     end
     @item = @merchant.items.create(ip)
+    @item.generate_slug
     if @item.save
       flash[:success] = "#{@item.name} has been added!"
       if current_admin?
@@ -70,7 +71,12 @@ class Dashboard::ItemsController < Dashboard::BaseController
       ip[:image] = 'https://picsum.photos/200/300/?image=524'
     end
     ip[:active] = true
-    @item.update(ip)
+    if ip[:name] != @item.name && ip[:name] != ""
+      @item.update(ip)
+      @item.generate_slug
+    else
+      @item.update(ip)
+    end
     if @item.save
       flash[:success] = "#{@item.name} has been updated!"
       if current_admin?
