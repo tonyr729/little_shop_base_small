@@ -70,20 +70,37 @@ RSpec.describe Item, type: :model do
     end
 
     it '.generate_slug' do
-      item = create(:item, name: 'My! Awesome Item!')
-      expect(item.slug).to eq("my-awesome-item")
+      user = create(:user)
+      item = Item.create!(
+        name: 'Unique! slUG@$', 
+        description: "Discription", 
+        image: "img.jpg",
+        inventory: 40, 
+        price: 10,
+        user: user
+      )
+
+      result = item.generate_slug
+      expect(result).to eq("unique-slug")
     end
 
     it '.slug_check' do
-      item = create(:item, name: 'My! Awesome Item!')
-      item_2 = create(:item, name: 'My! Awesome Item!')
-      item_x = create(:item, name: 'My! Awesome Item!')
-      item_y = create(:item, name: 'My! Awesome Item!')
-      
-      expect(item.slug).to eq('my-awesome-item')
-      expect(item_2.slug).to eq('my-awesome-item-2')
-      expect(item_x.slug).to eq('my-awesome-item-3')
-      expect(item_y.slug).to eq('my-awesome-item-4')
+      user = create(:user)
+      item = Item.create!(
+        name: 'Non-unique slug', 
+        description: "Discription", 
+        image: "img.jpg",
+        inventory: 40, 
+        price: 10,
+        user: user,
+        slug: 'non-unique-slug'
+      )
+
+      result = item.slug_check('unique-slug')
+      expect(result).to eq('unique-slug')
+
+      result_2 = item.slug_check('non-unique-slug')
+      expect(result_2).to eq('non-unique-slug-2')
     end
   end
 end
