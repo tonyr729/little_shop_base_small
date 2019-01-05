@@ -122,10 +122,10 @@ RSpec.describe User, type: :model do
         @item_1, @item_2, @item_3, @item_4 = create_list(:item, 4, user: @merchant, inventory: 20)
 
         @order_1 = create(:completed_order, user: @user_1)
-        @oi_1a = create(:fulfilled_order_item, order: @order_1, item: @item_1, quantity: 2, price: 100)
+        @oi_1a = create(:fulfilled_order_item, order: @order_1, item: @item_1, quantity: 2, price: 100, updated_at: 1.month.from_now)
 
         @order_2 = create(:completed_order, user: @user_1)
-        @oi_1b = create(:fulfilled_order_item, order: @order_2, item: @item_1, quantity: 1, price: 80)
+        @oi_1b = create(:fulfilled_order_item, order: @order_2, item: @item_1, quantity: 1, price: 80, updated_at: 1.month.from_now)
 
         @order_3 = create(:completed_order, user: @user_2)
         @oi_2 = create(:fulfilled_order_item, order: @order_3, item: @item_2, quantity: 5, price: 60)
@@ -143,6 +143,11 @@ RSpec.describe User, type: :model do
         expect(@merchant.quantity_sold_percentage[:sold]).to eq(15)
         expect(@merchant.quantity_sold_percentage[:total]).to eq(95)
         expect(@merchant.quantity_sold_percentage[:percentage]).to eq(15.79)
+      end
+      it '.monthly_sales' do
+        expect(@merchant.monthly_sales.count).to eq(12)
+        expect(@merchant.monthly_sales[0]).to eq(3)
+        expect(@merchant.monthly_sales[1]).to eq(2)
       end
       it '.top_3_states' do
         expect(@merchant.top_3_states.first.state).to eq('CO')

@@ -53,6 +53,13 @@
     <% end %>
   <% end %>
 
+  <%= tag.div id: 'monthly-sales' do %>
+    <h4>Items sold per month</h4>
+    <%= tag.div id: 'bar-chart-group' do %>
+      <%= render partial: "bar_chart", locals: {chart_data: @monthly_sales} %>
+    <% end %>
+  <% end %>
+
   <%= tag.div id: 'top-3-states' do %>
     <h4>Top 3 States where Items were Shipped</h4>
     <ol>

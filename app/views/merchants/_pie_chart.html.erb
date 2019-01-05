@@ -1,9 +1,9 @@
 
 <canvas id="pie-chart" height="10vh" width="10vw"></canvas>
 <script>
-  const chart_data = <%=  raw chart_data.to_json %>
-  const sold = chart_data.sold
-  const unsold = chart_data.total - chart_data.sold
+  const qsp_data = <%=  raw chart_data.to_json %>
+  const sold = qsp_data.sold
+  const unsold = qsp_data.total - qsp_data.sold
   const ctx = document.getElementById("pie-chart").getContext('2d');
   const data = {
     datasets: [{

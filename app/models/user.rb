@@ -68,6 +68,15 @@ class User < ApplicationRecord
     }
   end
 
+  def monthly_sales
+    result = []
+    12.times do |i|
+      month = (i + 1)
+      result << self.items.joins(:order_items).where('order_items.fulfilled=?', true).where('extract(month from order_items.updated_at) = ?', month).count('order_items.id')
+    end
+    result
+  end
+
   def top_3_states
     Item.joins('inner join order_items oi on oi.item_id=items.id inner join orders o on o.id=oi.order_id inner join users u on o.user_id=u.id')
       .select('u.state, sum(oi.quantity) as quantity_shipped')
