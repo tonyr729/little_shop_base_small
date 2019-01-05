@@ -38,6 +38,17 @@ class User < ApplicationRecord
     merchant_fulfillment_times(:desc, 3)
   end
 
+  def self.total_sold
+    totals = User.joins('inner join orders o on o.user_id=users.id inner join order_items oi on oi.order_id=o.id inner join items i on i.id=oi.item_id')
+      .select('sum(oi.quantity) as amount_sold')
+      .where('o.status=?', 1)
+
+    {
+      tas: totals[0].amount_sold,
+      tbm: totals.group(:id)
+    } 
+  end
+
   def my_pending_orders
     Order.joins(order_items: :item)
       .where("items.merchant_id=? AND orders.status=? AND order_items.fulfilled=?", self.id, 0, false)
