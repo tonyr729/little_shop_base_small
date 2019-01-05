@@ -200,6 +200,9 @@ RSpec.describe 'Merchant Dashboard page' do
           within '#quantity-sold' do
             expect(page).to have_content('You have sold 15 items out of 95 (15.79%)')
           end
+          within '#pie-chart-group' do
+            expect(page).to have_css("#pie-chart")
+          end
         end
       end
       it 'shows top states where orders were shipped' do
