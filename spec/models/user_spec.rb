@@ -78,6 +78,14 @@ RSpec.describe User, type: :model do
         aft = User.bottom_3_fulfilling_merchants[2].avg_fulfillment_time
         expect(aft[0..7]).to eq('00:01:00')
       end
+      it '.total_sold' do  
+        total_sold = User.total_sold
+        expect(total_sold[:tas]).to eq(801)
+        expect(total_sold[:tbm][0].amount_sold).to eq(100)
+        expect(total_sold[:tbm][1].amount_sold).to eq(300)
+        expect(total_sold[:tbm][2].amount_sold).to eq(200)
+        expect(total_sold[:tbm][3].amount_sold).to eq(201)
+      end
     end
   end
 
