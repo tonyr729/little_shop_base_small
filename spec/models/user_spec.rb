@@ -81,10 +81,12 @@ RSpec.describe User, type: :model do
       it '.total_sold' do  
         total_sold = User.total_sold
         expect(total_sold[:tas]).to eq(801)
+        expect(total_sold[:tbm][0].name).to eq(@merchant_1.name)
         expect(total_sold[:tbm][0].amount_sold).to eq(100)
+        expect(total_sold[:tbm][1].name).to eq(@merchant_2.name)
         expect(total_sold[:tbm][1].amount_sold).to eq(300)
-        expect(total_sold[:tbm][2].amount_sold).to eq(200)
-        expect(total_sold[:tbm][3].amount_sold).to eq(201)
+        expect(total_sold[:tbm][2].name).to eq(@merchant_3.name)
+        expect(total_sold[:tbm][2].amount_sold).to eq(401)
       end
     end
   end
