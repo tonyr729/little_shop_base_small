@@ -39,13 +39,16 @@ class User < ApplicationRecord
   end
 
   def self.total_sold
-    totals = User.joins('inner join orders o on o.user_id=users.id inner join order_items oi on oi.order_id=o.id inner join items i on i.id=oi.item_id')
+    totals = User.joins('INNER JOIN orders o ON o.user_id=users.id INNER JOIN order_items oi ON oi.order_id=o.id INNER JOIN items i ON i.id=oi.item_id')
       .select('sum(oi.quantity) as amount_sold')
       .where('o.status=?', 1)
-
+    totals_by_merchant = User.joins('INNER JOIN "items" ON "items"."merchant_id" = "users"."id" INNER JOIN "order_items" ON "order_items"."item_id" = "items"."id" INNER JOIN "orders" ON "orders"."id" = "order_items"."order_id"')
+      .select('users.name as "name", SUM(order_items.quantity) as amount_sold')
+      .where('orders.status=?', 1)
+      .group(:id)
     {
       tas: totals[0].amount_sold,
-      tbm: totals.group(:id)
+      tbm: totals_by_merchant
     } 
   end
 
