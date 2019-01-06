@@ -1,27 +1,38 @@
 
 <canvas id="pie-chart" height="10vh" width="10vw"></canvas>
 <script>
-  const qsp_data = <%=  raw chart_data.to_json %>
-  const sold = qsp_data.sold
-  const unsold = qsp_data.total - qsp_data.sold
+  const qsp_data = <%=  raw qsp_data.to_json %>
+  const total_data = <%=  raw total_data.to_json %>
+  const qsp = [qsp_data.sold, (qsp_data.total - qsp_data.sold)]
+  const tas = total_data.map(user => user.amount_sold)
+  const qsp_labels = ['Sold', 'Unsold']
+  const tas_labels = total_data.map(user => user.name)
+  const avalible_data = qsp_data.sold ? qsp : tas
+  const labels = qsp_data === {} ? qsp_labels : tas_labels
   const ctx = document.getElementById("pie-chart").getContext('2d');
+  
   const data = {
     datasets: [{
-        data: [sold, unsold],            
+        data: avalible_data,            
         backgroundColor: [
           'rgba(54, 162, 235, 0.2)',
-          'rgba(255, 99, 132, 0.2)'
+          'rgba(255, 99, 132, 0.2)',
+          'rgba(255, 206, 86, 0.2)',
+          'rgba(75, 192, 192, 0.2)',
+          'rgba(153, 102, 255, 0.2)',
+          'rgba(255, 159, 64, 0.2)'
         ],
         borderColor: [
           'rgba(54, 162, 235, 1)',
-          'rgba(255,99,132,1)'
+          'rgba(255,99,132,1)',
+          'rgba(255, 206, 86, 1)',
+          'rgba(75, 192, 192, 1)',
+          'rgba(153, 102, 255, 1)',
+          'rgba(255, 159, 64, 1)'
         ],
         borderWidth: 1
     }],
-    labels: [
-        'Sold',
-        'Unsold'
-    ]
+    labels: labels
   };
 
   const myPieChart = new Chart(ctx,{

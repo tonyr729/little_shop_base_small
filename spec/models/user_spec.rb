@@ -78,6 +78,16 @@ RSpec.describe User, type: :model do
         aft = User.bottom_3_fulfilling_merchants[2].avg_fulfillment_time
         expect(aft[0..7]).to eq('00:01:00')
       end
+      it '.total_sold' do  
+        total_sold = User.total_sold
+        expect(total_sold[:tas]).to eq(801)
+        expect(total_sold[:tbm][0].name).to eq(@merchant_1.name)
+        expect(total_sold[:tbm][0].amount_sold).to eq(100)
+        expect(total_sold[:tbm][1].name).to eq(@merchant_2.name)
+        expect(total_sold[:tbm][1].amount_sold).to eq(300)
+        expect(total_sold[:tbm][2].name).to eq(@merchant_3.name)
+        expect(total_sold[:tbm][2].amount_sold).to eq(401)
+      end
     end
   end
 
@@ -146,8 +156,8 @@ RSpec.describe User, type: :model do
       end
       it '.monthly_sales' do
         expect(@merchant.monthly_sales.count).to eq(12)
-        expect(@merchant.monthly_sales[0]).to eq(3)
-        expect(@merchant.monthly_sales[1]).to eq(2)
+        expect(@merchant.monthly_sales[0]).to eq(12)
+        expect(@merchant.monthly_sales[1]).to eq(3)
       end
       it '.top_3_states' do
         expect(@merchant.top_3_states.first.state).to eq('CO')

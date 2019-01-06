@@ -2,7 +2,6 @@
 <script>
   const bar_ctx = document.getElementById("myChart");
   const monthly_data = <%=  raw chart_data.to_json %>
-  console.log(monthly_data)
   const myChart = new Chart(bar_ctx, {
       type: 'bar',
       data: {

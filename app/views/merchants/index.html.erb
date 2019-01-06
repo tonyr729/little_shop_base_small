@@ -101,4 +101,11 @@
     <% end unless @top_3_quantity_orders.nil? %>
     </ol>
   <% end %>
+  <%= tag.div id: "total-sold" do %>
+    <h4>Total Sold by all Merchants in completed orders.</h4>
+    <%= tag.div id: 'bar-chart-group' do %>
+      <p>Total Sales: <%= @total_sales[:tas] %></p>
+      <%= render partial: "merchants/pie_chart", locals: {total_data: @total_sales[:tbm], qsp_data: {}} %>
+    <% end %>
+  <% end %>
 <% end %>

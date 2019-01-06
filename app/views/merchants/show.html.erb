@@ -25,7 +25,7 @@
     <ul>
       <% @orders.each do |order| %>
         <%= tag.li id: "order-#{order.id}" do %>
-          <%= render partial: "order_card", locals: {order: order} %>
+          <%= render partial: "merchants/order_card", locals: {order: order} %>
         <% end %>
       <% end %>
     </ul>
@@ -49,14 +49,14 @@
     <p>You have sold <%= @qsp[:sold] %> items out of <%= @qsp[:total] %> (<%= @qsp[:percentage] %>%)</p>
 
     <%= tag.div id: 'pie-chart-group' do %>
-      <%= render partial: "pie_chart", locals: {chart_data: @qsp} %>
+      <%= render partial: "merchants/pie_chart", locals: {qsp_data: @qsp, total_data: []} %>
     <% end %>
   <% end %>
 
   <%= tag.div id: 'monthly-sales' do %>
     <h4>Items sold per month</h4>
     <%= tag.div id: 'bar-chart-group' do %>
-      <%= render partial: "bar_chart", locals: {chart_data: @monthly_sales} %>
+      <%= render partial: "merchants/bar_chart", locals: {chart_data: @monthly_sales} %>
     <% end %>
   <% end %>
 

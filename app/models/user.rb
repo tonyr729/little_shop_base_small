@@ -38,6 +38,20 @@ class User < ApplicationRecord
     merchant_fulfillment_times(:desc, 3)
   end
 
+  def self.total_sold
+    totals = User.joins('INNER JOIN orders o ON o.user_id=users.id INNER JOIN order_items oi ON oi.order_id=o.id INNER JOIN items i ON i.id=oi.item_id')
+      .select('sum(oi.quantity) as amount_sold')
+      .where('o.status=?', 1)
+    totals_by_merchant = User.joins('INNER JOIN "items" ON "items"."merchant_id" = "users"."id" INNER JOIN "order_items" ON "order_items"."item_id" = "items"."id" INNER JOIN "orders" ON "orders"."id" = "order_items"."order_id"')
+      .select('users.name as "name", SUM(order_items.quantity) as amount_sold')
+      .where('orders.status=?', 1)
+      .group(:id)
+    {
+      tas: totals[0].amount_sold,
+      tbm: totals_by_merchant
+    } 
+  end
+
   def my_pending_orders
     Order.joins(order_items: :item)
       .where("items.merchant_id=? AND orders.status=? AND order_items.fulfilled=?", self.id, 0, false)
@@ -72,7 +86,7 @@ class User < ApplicationRecord
     result = []
     12.times do |i|
       month = (i + 1)
-      result << self.items.joins(:order_items).where('order_items.fulfilled=?', true).where('extract(month from order_items.updated_at) = ?', month).count('order_items.id')
+      result << self.items.joins(:order_items).where('order_items.fulfilled=?', true).where('extract(month from order_items.updated_at) = ?', month).sum('order_items.quantity')
     end
     result
   end
