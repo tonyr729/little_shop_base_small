@@ -86,7 +86,7 @@ class User < ApplicationRecord
     result = []
     12.times do |i|
       month = (i + 1)
-      result << self.items.joins(:order_items).where('order_items.fulfilled=?', true).where('extract(month from order_items.updated_at) = ?', month).count('order_items.id')
+      result << self.items.joins(:order_items).where('order_items.fulfilled=?', true).where('extract(month from order_items.updated_at) = ?', month).sum('order_items.quantity')
     end
     result
   end

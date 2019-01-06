@@ -156,8 +156,8 @@ RSpec.describe User, type: :model do
       end
       it '.monthly_sales' do
         expect(@merchant.monthly_sales.count).to eq(12)
-        expect(@merchant.monthly_sales[0]).to eq(3)
-        expect(@merchant.monthly_sales[1]).to eq(2)
+        expect(@merchant.monthly_sales[0]).to eq(12)
+        expect(@merchant.monthly_sales[1]).to eq(3)
       end
       it '.top_3_states' do
         expect(@merchant.top_3_states.first.state).to eq('CO')
